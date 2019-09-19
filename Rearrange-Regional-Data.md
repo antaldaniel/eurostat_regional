@@ -552,8 +552,8 @@ single, unique column name, which I call `indicator`. So, if you want to
 run my code without modifications, do that, but of course, you can use
 your own column structures.
 
-The idea of course is to end up with a table where each unique `unit`
-and `unit` and`unit` have one and only one `value`. This is absolutely
+The idea of course is to end up with a table where each unique `geo` and
+`time` and`indicator` have one and only one `value`. This is absolutely
 necessary to clean up the data, and later to join the data with maps or
 other data.
 
