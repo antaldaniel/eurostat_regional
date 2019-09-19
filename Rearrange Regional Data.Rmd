@@ -1,8 +1,11 @@
 ---
 title: "Rearranging Regional Data"
 author: "Daniel Antal, CFA"
+header-includes:
 date: "9/19/2019"
-output: html_document
+output:
+  md_document:
+    toc: true
 ---
 
 ```{r setup, include=FALSE}
@@ -14,6 +17,7 @@ library(readxl)
 
 ## Motivation
 
+My supposedly reproducible research codes do not work from last year, when the same products with the same IDs were reported under the `NUTS2013` region boundary definitions. After spending countless days with fixing my datasets, I learned a lot about the problematic transition from `NUTS2013` to `NUTS2016` data products. I'd like to create a package vignette, and possibly some helper functions to save many hours of work for users of regional datasets.
 
 ## The Correspondence Table
 
@@ -27,6 +31,10 @@ if(! file.exists(file.path('data-raw' ,'NUTS2013-NUTS2016.xlsx'))) {
   download.file ( url = 'https://ec.europa.eu/eurostat/documents/345175/629341/NUTS2013-NUTS2016.xlsx', destfile = file.path('data-raw', 'NUTS2013-NUTS2016.xlsx' ))
 }
 
+#The Excel file downloaded from Eurostat may or may not work on your system. If you are unlucky, you can try my copy. 
+if(! file.exists(file.path('data-raw' ,'NUTS2013-NUTS2016.xlsx'))) {
+  download.file ( url = 'https://github.com/antaldaniel/eurostat_regional/raw/master/data-raw/NUTS2013-NUTS2016.xlsx', destfile = file.path('data-raw', 'NUTS2013-NUTS2016.xlsx' ))
+}
 
 regions <- readxl::read_excel( file.path('data-raw', 'NUTS2013-NUTS2016.xlsx'),
                    sheet = 'NUTS2013-NUTS2016', 
@@ -49,7 +57,7 @@ nuts_2016_codes <- unique (regions$code16)
 
 It is a good idea to have a comprehensive look of what happened, because each data set may have a different problem. I organized the regions into `unchanged_regions`, `changed_regions` and `discontinued_regions`. These tables will help in correcting the data. Unfortunately, I found some regions in Slovenia and Greece that are not in any of these categories.
 
-```{r}
+```{r overview}
 ##In these cases, the code13 == code16
 unchanged_regions <- regions %>% filter ( is.na(change)) %>%
   fill ( nuts1_name ) %>%
@@ -68,14 +76,14 @@ discontinued_regions  <- changed_regions %>%
 
 ### NUTS1 Correspondence
 
-```{r nuts1correspondence}
+```{r nuts1correspondence, out.width='90%', results='asis'}
 nuts1_correspondence <- readxl::read_excel( file.path('data-raw', 'NUTS2013-NUTS2016.xlsx'),
  sheet = 'Correspondence NUTS-1', 
  skip = 0 , col_names = T) %>%
   set_names ( ., c("code13", "code16", "nuts1_name", "change", "resolution")) %>%
   mutate_if ( is.factor, as.character )
 
-knitr::kable (head(nuts2_correspondence,6))
+knitr::kable (head(nuts1_correspondence,6))
 ```
 
 
@@ -83,7 +91,7 @@ knitr::kable (head(nuts2_correspondence,6))
 
 Similarly, there is a table for NUTS2 level. You have to beware that all NUTS2 regions are contained in wider NUTS1 regions.  So there are two logically possible cases: a NUTS2 change affected only one NUTS1 region (changes were made within a larger region), or it affected several NUTS1 regions.  If you work with data that has both NUTS1 and NUTS2 level information, such as any of the internet useage products, for example, `isoc_r_iuse_i`, you must correct NUTS1 and NUTS2 level problems consistently.
 
-```{r nuts2correspondence, result='asis'}
+```{r nuts2correspondence, out.width='90%', results='asis'}
 nuts2_correspondence <- readxl::read_excel( 
   file.path('data-raw', 'NUTS2013-NUTS2016.xlsx'),                                            sheet = 'Correspondence NUTS-2',                                            skip = 0 , col_names = TRUE) %>%
   select ( 1:5 ) %>%
@@ -101,7 +109,7 @@ The NUTS3 regions are small regions within the NUTS2 regions.  There are only a 
 
 However, many corrections on NUTS1 or NUTS2 level require reconciliation with the use of NUTS3 data, which, sadly, contains a lot of relabelling and other changes. So if you really want to fix everything, you have to dwell into the NUTS3 level, too. 
 
-```{r nuts3correspondence, results = 'asis'}
+```{r nuts3correspondence, out.width='90%', results='asis'}
 nuts3_correspondence <- readxl::read_excel( 
   file.path('data-raw', 'NUTS2013-NUTS2016.xlsx'),                                            sheet = 'Correspondence NUTS-3',                                            skip = 0 , col_names = TRUE) %>%
   select ( 1:5 ) %>%
