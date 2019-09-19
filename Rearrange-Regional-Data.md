@@ -536,6 +536,27 @@ you have to work with historical data or with panel data. I do not think
 that this should be included in the eurostat package, rather a
 constructive discussion should start with Eurostat.
 
+The following function requires to bring the Eurostat regional data into
+a tidy form. The data that you get with
+`eurostat::get_eurostat(id = 'demo_r_d3area')` is a quasi-long-form
+data. It is not fully tidy wide, and not fully tidy long.
+
+What I do is that I keep `geo`, `time`, `values`, add a `description`,
+create and ISO-conform `country_code` and `country` column, and in the
+case of annual data for ease of use, I take the year part out of the
+`time` variable to `years`.
+
+Furthermore, whatever variables are left, for example, `unit`,
+`landuse`, `cofog`, `indic_is`, `ind_type`, etc, are united into a
+single, unique column name, which I call `indicator`. So, if you want to
+run my code without modifications, do that, but of course, you can use
+your own column structures.
+
+The idea of course is to end up with a table where each unique `unit`
+and `unit` and`unit` have one and only one `value`. This is absolutely
+necessary to clean up the data, and later to join the data with maps or
+other data.
+
     require(tidyverse)
     #You need the metadata information from the first chunk if you run this,
     #i.e. you must read the Excel correspondence tables and tidy them up.
