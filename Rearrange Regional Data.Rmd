@@ -120,6 +120,7 @@ nuts3_correspondence <- readxl::read_excel(
 knitr::kable (head(nuts3_correspondence,6))
 ```
 
+
 ## Problems from inconsistent NUTS level data
 
 ### Inconsistent levels
@@ -127,6 +128,16 @@ knitr::kable (head(nuts3_correspondence,6))
 In many cases, the name and/or the metadata description of the statistical product refers to NUTS2 level data, but in fact, you receive a mixed data table that has data from all NUTS levels.
 
 This may create some extra filtering work, especially if you want to be reproducible, tidy, or just want to check consistencies, but this can be a fortunate arrangement that Eurostat should keep and expand in the future with better metadata.  In this case, usually you have a lot of information present to correct the some problems. 
+
+For example, in [isoc_r_iuse_i](https://appsso.eurostat.ec.europa.eu/nui/show.do?dataset=isoc_r_iuse_i&lang=en), you find the following geo units that do not conform the current, NUTS2016 definion, and you cannot correct them on the basis of the correspondence table, because it does not contain in the current version information about Slovenia and Greece: SI01,SI02,EL1,EL2.
+
+However, the following regions can be corrected: FRB, FRC, FRD, FRE, FRF, FRG, FRH, FRI, FRJ, FRK, FRL, FRM, FRY, PL2, PL4, PL5, PL6, PL7, PL8, PL9, IE04, IE05, IE06, FRB0, FRC1, FRC2, FRD1, FRD2, FRE1, FRE2, FRF1, FRF2, FRF3, FRG0, FRH0, FRI1, FRI2, FRI3, FRJ1, FRJ2, FRK1, FRK2, FRL0, FRM0, FRY1, FRY2, FRY3, FRY4, LT01, LT02, HU11, HU12.
+
+In this case, with care you can add 4 NUTS1 regions to your dataset. 
+
+The usual problem with information society indicators is that they do not contain NUTS2 level information for larger countries.  In order to avoid unnecessary data loss, Eurostat (correctly) decided to report NUTS1 level data for large countries and NUTS2 level data for smaller countries. As far as I know the reason is that the microdata are surveys with fixed 1000-1500 national sample size, which would allow a regional breakup in the case of Estonia on NUTS3 level but only at NUTS1 level in Great Britain and Germany.  The way the samples are designed that they must be representative for Northern Ireland, which is a NUTS2 region, and therefore in the case of the UK you have inconsistent NUTS levels within a single country.
+
+While the best representation of the data is what Eurostat publishes, a lot of warnings would be required here in the title of the product and the metadata.  If you start to join this nominally NUTS2 datasets with other NUTS2 data, you will immediately loose the large member states! This is actually a very strong case to make all regional data products cross-level, i.e. whenever a data is avaiable on NUTS2 level, it should be reported in the same product on NUTS1 and NUTS0 levels, too. [^I will come back to this problem later.]
 
 ### Small country problems
 
@@ -151,6 +162,8 @@ The simplest error is a recoding error.  You will most likely run into this prob
 In many cases, the recoding means that the region did not change, but the abbreviated code did. For example, the change is merely `FRK1=FR72`. You have to look up all instances of `FR72` labels in your data, and if they are present, change them to `FRK1`. 
 
 In some cases, the name of the regionn changed (should you use them in your table, beware), but the region itself is the same. For example, the name of  `MAKROREGION PÓŁNOCNO-ZACHODNI` was changed, but its code, `PL4` and its boundaries remained the same. Because of many possible character encoding problems, I do not recommend the use of names in statistical analysis. If you need them in visualizations, add them back in the last, visualiztion stage.
+
+For example, the [tgs00096](https://ec.europa.eu/eurostat/web/products-datasets/product?code=tgs00096) has consistently wrong labels for all French NUTS2 regions.  The data in this product (Population on 1 January by NUTS 2 region) goes back to pre-NUTS2013 definitions, so this is not purely the same problem. The earliest data in this product is from 2007, so four NUTS definition changes may affect them. (See the [history of NUTS](https://ec.europa.eu/eurostat/web/nuts/history) on the Eurostat website.)
 
 ### Discountinued regions
 
@@ -205,8 +218,10 @@ There is a statistical regulation on how the NUTS change have to be carried out 
 
 - The inconsistent label levels and label codes make the joining of different statistical tables almost impossible.  Especially French, German, British and Polish data, furthermore the small country data is almost always lost in joining operations. It would be far better to provide table with two coding columns, like the solution above with `geo_code13` and `geo_code16`, or with the addition of an explicit auxillary column saying that the actual row is defined as `NUTS2013` or `NUTS2016`. This is not unambigous, because in some cases the codes changed, and in other they did not. A `PL2` code can be both `NUTS2013` or `NUTS2016`.
 
-- The mixed presence of `NUTS2013` and `NUTS2016` data makes panel data arrangement next to impossible. These should be separate statistical products with separate name and metadata explanations.
+- The mixed presence of `NUTS2013` and `NUTS2016` data makes panel data arrangement next to impossible. These should be separate statistical products with separate name and metadata explanations. 
 
-- The introduction of mixed level statistical products, like xxx, is welcome, because it allows users to follow the correspondence tables, but it should be done with correct descriptions and in a consistent way.
+- Some products go back as far as the `NUTS2003` definitions, and it should be clear, and if possible, consistent, how transition from `NUTS2013` to `NUTS2006`, then to `NUTS2010`, then to `NUTS2013` and eventually `NUTS2016` happened.   
+
+- The introduction of mixed level statistical products, like [isoc_r_iuse_i](https://appsso.eurostat.ec.europa.eu/nui/show.do?dataset=isoc_r_iuse_i&lang=en), is welcome, because it allows users to follow the correspondence tables, but it should be done with correct descriptions and in a consistent way.
 
 - It is a bad practice that whenever NUTS or NACE or COFOG or other statistical definitions change, Eurostat withdraws statistical products.  These products should be made available forever in an archive section, with warnings that they are not subject to further revisions and improvements, and they use out-of-date statistical definitions.  Such datasets may be used in many academic and non-academic populations, which cannot be reviewed and fact checked if the data disappears. With the increasing use of reproducible research techniques in academia and among professional users, disappearing datasets, or datasets that are not renamed but changed in essence cause extraordinary amont of debugging work.

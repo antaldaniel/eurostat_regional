@@ -436,6 +436,16 @@ encoding problems, I do not recommend the use of names in statistical
 analysis. If you need them in visualizations, add them back in the last,
 visualiztion stage.
 
+For example, the
+[tgs00096](https://ec.europa.eu/eurostat/web/products-datasets/product?code=tgs00096)
+has consistently wrong labels for all French NUTS2 regions. The data in
+this product (Population on 1 January by NUTS 2 region) goes back to
+pre-NUTS2013 definitions, so this is not purely the same problem. The
+earliest data in this product is from 2007, so four NUTS definition
+changes may affect them. (See the [history of
+NUTS](https://ec.europa.eu/eurostat/web/nuts/history) on the Eurostat
+website.)
+
 ### Discountinued regions
 
 Many regions are discontinued, so you may have data from the `NUTS2013`
@@ -562,8 +572,14 @@ should be recommended to Eurostat to change it.
     data arrangement next to impossible. These should be separate
     statistical products with separate name and metadata explanations.
 
--   The introduction of mixed level statistical products, like xxx, is
-    welcome, because it allows users to follow the correspondence
+-   Some products go back as far as the `NUTS2003` definitions, and it
+    should be clear, and if possible, consistent, how transition from
+    `NUTS2013` to `NUTS2006`, then to `NUTS2010`, then to `NUTS2013` and
+    eventually `NUTS2016` happened.
+
+-   The introduction of mixed level statistical products, like
+    [isoc\_r\_iuse\_i](https://appsso.eurostat.ec.europa.eu/nui/show.do?dataset=isoc_r_iuse_i&lang=en),
+    is welcome, because it allows users to follow the correspondence
     tables, but it should be done with correct descriptions and in a
     consistent way.
 
