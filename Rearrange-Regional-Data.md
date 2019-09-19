@@ -1,4 +1,5 @@
--   [Motivation](#motivation)
+-   [Working with Eurostat Regional
+    Data](#working-with-eurostat-regional-data)
 -   [The Correspondence Table](#the-correspondence-table)
     -   [NUTS1 Correspondence](#nuts1-correspondence)
     -   [NUTS2 Correspondence](#nuts2-correspondence)
@@ -7,9 +8,9 @@
     data](#problems-from-inconsistent-nuts-level-data)
     -   [Inconsistent levels](#inconsistent-levels)
     -   [Small country problems](#small-country-problems)
--   [Problems of Mislabelling](#problems-of-mislabelling)
+-   [Problems of Mislabeling](#problems-of-mislabeling)
     -   [Recoded regions](#recoded-regions)
-    -   [Discountinued regions](#discountinued-regions)
+    -   [Discontinued regions](#discontinued-regions)
     -   [Changed regions](#changed-regions)
 -   [Special territorial units](#special-territorial-units)
     -   [Extraterritorial units](#extraterritorial-units)
@@ -21,16 +22,40 @@
     -   [Warnings](#warnings)
     -   [Consultation with Eurostat](#consultation-with-eurostat)
 
-Motivation
-----------
+Working with Eurostat Regional Data
+-----------------------------------
 
-My supposedly reproducible research codes do not work from last year,
-when the same products with the same IDs were reported under the
-`NUTS2013` region boundary definitions. After spending countless days
-with fixing my datasets, I learned a lot about the problematic
-transition from `NUTS2013` to `NUTS2016` data products. I’d like to
-create a package vignette, and possibly some helper functions to save
-many hours of work for users of regional datasets.
+The [eurostat](http://ropengov.github.io/eurostat/) R package creates an
+excellent framework to retrieve and analyze European statistical data in
+a reproducible manner [Leo Lahti, Janne Huovari, Markus Kainu and
+Przemysław Biecek: Retrieval and Analysis of Eurostat Open Data with the
+eurostat
+Package](https://journal.r-project.org/archive/2017/RJ-2017-019/RJ-2017-019.pdf)
+It is not a product that is anyway associated with Eurostat, but it
+provides a very consistent approach to use Eurostat’s statistical
+products.
+
+The difficulty when you are working with regional data is that regional
+boundaries change very often within the EU. Member states change
+internal regional boundaries, or new member states join the EU. So if
+you have a data panel that goes back to 2007, it is subject to four
+potential boundary changes by 2019.
+
+![NUTS](https://ec.europa.eu/eurostat/documents/345175/501899/Nuts-history)
+
+The chart above is taken from the [Eurostat
+pages](https://ec.europa.eu/eurostat/web/nuts/history) dedicated to work
+with subnational territorial data.
+
+The change from `NUTS2013` to `NUTS2016` was not smooth. My supposedly
+reproducible research codes do not work from last year, when the same
+products with the same IDs were reported under the `NUTS2013` region
+boundary definitions. After spending countless days with fixing my
+datasets, I learned a lot about the problematic transition from
+`NUTS2013` to `NUTS2016` data products. I hope that this article helps
+solving a lot of issues if you data does not show up in the map, or if
+whole regions or countries disappear when you join several tables with
+each other.
 
 The Correspondence Table
 ------------------------
@@ -253,7 +278,7 @@ absence of an even lower resolution, most changes at this level cannot
 be reconciled.
 
 However, many corrections on NUTS1 or NUTS2 level require reconciliation
-with the use of NUTS3 data, which, sadly, contains a lot of relabelling
+with the use of NUTS3 data, which, sadly, contains a lot of relabeling
 and other changes. So if you really want to fix everything, you have to
 dwell into the NUTS3 level, too.
 
@@ -340,7 +365,7 @@ information present to correct the some problems.
 For example, in
 [isoc\_r\_iuse\_i](https://appsso.eurostat.ec.europa.eu/nui/show.do?dataset=isoc_r_iuse_i&lang=en),
 you find the following geo units that do not conform the current,
-NUTS2016 definion, and you cannot correct them on the basis of the
+NUTS2016 definition, and you cannot correct them on the basis of the
 correspondence table, because it does not contain in the current version
 information about Slovenia and Greece: SI01,SI02,EL1,EL2.
 
@@ -369,7 +394,7 @@ lot of warnings would be required here in the title of the product and
 the metadata. If you start to join this nominally NUTS2 datasets with
 other NUTS2 data, you will immediately loose the large member states!
 This is actually a very strong case to make all regional data products
-cross-level, i.e. whenever a data is avaiable on NUTS2 level, it should
+cross-level, i.e. whenever a data is available on NUTS2 level, it should
 be reported in the same product on NUTS1 and NUTS0 levels, too. \[^I
 will come back to this problem later.\]
 
@@ -401,14 +426,14 @@ characters followed by a number, and NUTS2 is always two alphabetic
 followed by 2 numbers.
 
 So far I have shown problems that can be solved with simple filtering or
-relabelling if you understand the hiearchy of NUTS levels. A far more
+relabeling if you understand the hierarchy of NUTS levels. A far more
 serious problem when NUTS2013 and NUTS2016 data got mixed without proper
 metadata.
 
-Problems of Mislabelling
-------------------------
+Problems of Mislabeling
+-----------------------
 
-A typical mislabelling problem is that in the same data/metadata column
+A typical mislabeling problem is that in the same data/metadata column
 `geo` you find mixed region codes, following seemingly randomly
 `NUTS2013` and `NUTS2016` codes. This is a real error, and it requires
 more than data tiding to fix these problems, up to the level they can be
@@ -429,13 +454,13 @@ the abbreviated code did. For example, the change is merely `FRK1=FR72`.
 You have to look up all instances of `FR72` labels in your data, and if
 they are present, change them to `FRK1`.
 
-In some cases, the name of the regionn changed (should you use them in
+In some cases, the name of the region changed (should you use them in
 your table, beware), but the region itself is the same. For example, the
 name of `MAKROREGION PÓŁNOCNO-ZACHODNI` was changed, but its code, `PL4`
 and its boundaries remained the same. Because of many possible character
 encoding problems, I do not recommend the use of names in statistical
 analysis. If you need them in visualizations, add them back in the last,
-visualiztion stage.
+visualization stage.
 
 For example, the
 [tgs00096](https://ec.europa.eu/eurostat/web/products-datasets/product?code=tgs00096)
@@ -447,7 +472,7 @@ changes may affect them. (See the [history of
 NUTS](https://ec.europa.eu/eurostat/web/nuts/history) on the Eurostat
 website.)
 
-### Discountinued regions
+### Discontinued regions
 
 Many regions are discontinued, so you may have data from the `NUTS2013`
 definition that you will not use in a `NUTS2016` map or analysis. Do not
@@ -459,7 +484,7 @@ re-create some missing `NUTS2016` observations.
 In the correspondence files, you find hints how to solve missing case
 problems. For example, if `IE05` is missing from your NUTS2 table, you
 can try to impute it with the equation `IE05=IE023+IE024+IE025`. In this
-particular case, because `IE023` is a NUTS3 small regions’s code, you
+particular case, because `IE023` is a NUTS3 small region’s code, you
 have to go down to that particular level to impute the missing NUTS2
 case. If you are lucky, the NUTS3 data is in the dataset (incorrectly
 labelled as NUTS2), or it is available from a NUTS3-level product.
@@ -476,7 +501,7 @@ There are a few extra caveats here:
     case the data is not atomic, and therefore it is not additive. You
     cannot add or subtracted population density or euro per capita
     figures. In this case, you can only do the imputation if you
-    additively come up with euro and population figures for
+    additive come up with euro and population figures for
     `IE023+IE024+IE025`, and divide the result.
 
 -   If the change is not a re-arrangement of lower level, lower
@@ -529,7 +554,7 @@ You need to run the first chunks to make the Eurostat correspondence
 table tidy (See: [Hadley Wickham: Tidy
 Data](https://vita.had.co.nz/papers/tidy-data.pdf)).
 
-As you can see, this is not for the faint heart, and I do not guarrantee
+As you can see, this is not for the faint heart, and I do not guarantee
 that it works with all data perfectly. It is more of an illustration of
 the problem and a list of ideas how you can improve the data quality if
 you have to work with historical data or with panel data. I do not think
@@ -832,7 +857,7 @@ other data.
         add_count ( geo, time )
       
       if ( any(corrected_dataset$n>1)) {
-        message("Duplications occured, probably because of the relabelling.")
+        message("Duplications occured, probably because of the relabeling.")
         }
       
       ## Hopefully that is the only reason of the duplication, which 
@@ -865,7 +890,7 @@ Conclusions
 -----------
 
 While I did write a comprehensive code to these problems, it has so many
-excemptions that I do not suggest do include it in the `eurostat`
+exceptions that I do not suggest do include it in the `eurostat`
 package, because it would require a lot of work to test all possible
 errors and to maintain the quality of the code as further changes may
 come in the future.
@@ -876,7 +901,7 @@ I think that the simple cases can and should be encoded in the eurostat
 package. For example, a very simple function could create two additional
 columns from the `geo` variable, like I did, a `code13` and a `code16`
 one, which contains the correct code for `NUTS2013` for backward
-compatiblity with pre-exsiting maps and reseaerch, and the current
+compatibility with pre-existing maps and research, and the current
 `NUTS2016` definition. The `eurostat` package should also allow the use
 of `NUTS2013` and `NUTS2016` maps.
 
@@ -889,7 +914,7 @@ and `NUTS2` maps joining datasets.
 ### Warnings
 
 In the case of `discontinued` and `changed` `geo` definitions, I think
-that the `get_eurostat` function should give a warning, someling like
+that the `get_eurostat` function should give a warning, some ling like
 “Beware, the downloaded data contain geo codes that follow the earlier
 national and regional coding nomenclature. Read our vignette.”
 
@@ -907,8 +932,8 @@ should be recommended to Eurostat to change it.
     is almost always lost in joining operations. It would be far better
     to provide table with two coding columns, like the solution above
     with `geo_code13` and `geo_code16`, or with the addition of an
-    explicit auxillary column saying that the actual row is defined as
-    `NUTS2013` or `NUTS2016`. This is not unambigous, because in some
+    explicit auxiliary column saying that the actual row is defined as
+    `NUTS2013` or `NUTS2016`. This is not unambiguous, because in some
     cases the codes changed, and in other they did not. A `PL2` code can
     be both `NUTS2013` or `NUTS2016`.
 
@@ -937,4 +962,4 @@ should be recommended to Eurostat to change it.
     if the data disappears. With the increasing use of reproducible
     research techniques in academia and among professional users,
     disappearing datasets, or datasets that are not renamed but changed
-    in essence cause extraordinary amont of debugging work.
+    in essence cause extraordinary amount of debugging work.
