@@ -170,9 +170,18 @@ There are a few extra caveats here:
 
 * You will not be able to fill the missing observation when any of the constituent data is unavailable.  You will not be able to get the `IE05` data if any of `IE023` or `IE024` or `IE025` is missing.
 
-## Non-EU member states
+## Special territorial units
 
-It is a welcome development that more and more regional statistics include EEA members, candidate or potential candidate countries.  Sometimes you can find regional data about Albania, Andora, Bosnia-Herzegovina, Iceland, Kosovo, Lichtenstein, Montenegro, North Macedonia, Serbia, Switzerland, Norway, and probably further states, too. 
+### Extraterritorial units 
+
+Some NUTS codes end with `Z`, such as `ITZ`, `ITZZ` and `ITZZZ`, in this case, extra-regional data for Italy.  You can treat this as a kind of a correction raw, and it usually, or probably always empty in the case of regional statistics.  It is used for data that cannot be connected to a region.
+
+However, the fact that they are always `NA` values can cause problems with imputation algorithms, so the best practice is to filter these empty rows out.
+
+
+### Non-EU member states
+
+It is a welcome development that more and more regional statistics include EEA members, candidate or potential candidate countries.  Sometimes you can find regional data about Albania, Andora, Bosnia-Herzegovina, Iceland, Kosovo, Lichtenstein, Montenegro, North Macedonia, Serbia, Switzerland, Turkey and Norway, and probably further states, too. 
 
 If the coding is correct, you can easily put the data on a map, too, because the maps that are used by the `eurostat` package contain the polygons of these regions. However, the NUTS correspondence table do not include them, so there is no recourse to check their consistency. They sometimes pop up, sometimes not, so make sure if you have too many observations, check for them. 
 
@@ -201,14 +210,3 @@ There is a statistical regulation on how the NUTS change have to be carried out 
 - The introduction of mixed level statistical products, like xxx, is welcome, because it allows users to follow the correspondence tables, but it should be done with correct descriptions and in a consistent way.
 
 - It is a bad practice that whenever NUTS or NACE or COFOG or other statistical definitions change, Eurostat withdraws statistical products.  These products should be made available forever in an archive section, with warnings that they are not subject to further revisions and improvements, and they use out-of-date statistical definitions.  Such datasets may be used in many academic and non-academic populations, which cannot be reviewed and fact checked if the data disappears. With the increasing use of reproducible research techniques in academia and among professional users, disappearing datasets, or datasets that are not renamed but changed in essence cause extraordinary amont of debugging work.
-
-
-
-
-
-
-
-
-
-
-

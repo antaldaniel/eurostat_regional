@@ -11,7 +11,9 @@
     -   [Recoded regions](#recoded-regions)
     -   [Discountinued regions](#discountinued-regions)
     -   [Changed regions](#changed-regions)
--   [Non-EU member states](#non-eu-member-states)
+-   [Special territorial units](#special-territorial-units)
+    -   [Extraterritorial units](#extraterritorial-units)
+    -   [Non-EU member states](#non-eu-member-states)
 -   [Conclusions](#conclusions)
     -   [Simple filtering and error
         handling](#simple-filtering-and-error-handling)
@@ -438,15 +440,29 @@ There are a few extra caveats here:
     constituent data is unavailable. You will not be able to get the
     `IE05` data if any of `IE023` or `IE024` or `IE025` is missing.
 
-Non-EU member states
---------------------
+Special territorial units
+-------------------------
+
+### Extraterritorial units
+
+Some NUTS codes end with `Z`, such as `ITZ`, `ITZZ` and `ITZZZ`, in this
+case, extra-regional data for Italy. You can treat this as a kind of a
+correction raw, and it usually, or probably always empty in the case of
+regional statistics. It is used for data that cannot be connected to a
+region.
+
+However, the fact that they are always `NA` values can cause problems
+with imputation algorithms, so the best practice is to filter these
+empty rows out.
+
+### Non-EU member states
 
 It is a welcome development that more and more regional statistics
 include EEA members, candidate or potential candidate countries.
 Sometimes you can find regional data about Albania, Andora,
 Bosnia-Herzegovina, Iceland, Kosovo, Lichtenstein, Montenegro, North
-Macedonia, Serbia, Switzerland, Norway, and probably further states,
-too.
+Macedonia, Serbia, Switzerland, Turkey and Norway, and probably further
+states, too.
 
 If the coding is correct, you can easily put the data on a map, too,
 because the maps that are used by the `eurostat` package contain the
