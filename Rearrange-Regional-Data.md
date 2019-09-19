@@ -11,6 +11,7 @@
     -   [Recoded regions](#recoded-regions)
     -   [Discountinued regions](#discountinued-regions)
     -   [Changed regions](#changed-regions)
+-   [Non-EU member states](#non-eu-member-states)
 -   [Conclusions](#conclusions)
     -   [Simple filtering and error
         handling](#simple-filtering-and-error-handling)
@@ -436,6 +437,23 @@ There are a few extra caveats here:
 -   You will not be able to fill the missing observation when any of the
     constituent data is unavailable. You will not be able to get the
     `IE05` data if any of `IE023` or `IE024` or `IE025` is missing.
+
+Non-EU member states
+--------------------
+
+It is a welcome development that more and more regional statistics
+include EEA members, candidate or potential candidate countries.
+Sometimes you can find regional data about Albania, Andora,
+Bosnia-Herzegovina, Iceland, Kosovo, Lichtenstein, Montenegro, North
+Macedonia, Serbia, Switzerland, Norway, and probably further states,
+too.
+
+If the coding is correct, you can easily put the data on a map, too,
+because the maps that are used by the `eurostat` package contain the
+polygons of these regions. However, the NUTS correspondence table do not
+include them, so there is no recourse to check their consistency. They
+sometimes pop up, sometimes not, so make sure if you have too many
+observations, check for them.
 
 Conclusions
 -----------

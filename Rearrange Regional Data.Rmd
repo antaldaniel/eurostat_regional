@@ -170,6 +170,12 @@ There are a few extra caveats here:
 
 * You will not be able to fill the missing observation when any of the constituent data is unavailable.  You will not be able to get the `IE05` data if any of `IE023` or `IE024` or `IE025` is missing.
 
+## Non-EU member states
+
+It is a welcome development that more and more regional statistics include EEA members, candidate or potential candidate countries.  Sometimes you can find regional data about Albania, Andora, Bosnia-Herzegovina, Iceland, Kosovo, Lichtenstein, Montenegro, North Macedonia, Serbia, Switzerland, Norway, and probably further states, too. 
+
+If the coding is correct, you can easily put the data on a map, too, because the maps that are used by the `eurostat` package contain the polygons of these regions. However, the NUTS correspondence table do not include them, so there is no recourse to check their consistency. They sometimes pop up, sometimes not, so make sure if you have too many observations, check for them. 
+
 ## Conclusions
 
 While I did write a comprehensive code to these problems, it has so many excemptions that I do not suggest do include it in the `eurostat` package, because it would require a lot of work to test all possible errors and to maintain the quality of the code as further changes may come in the future.
