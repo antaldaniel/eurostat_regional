@@ -14,6 +14,7 @@
 -   [Special territorial units](#special-territorial-units)
     -   [Extraterritorial units](#extraterritorial-units)
     -   [Non-EU member states](#non-eu-member-states)
+-   [One possible solution](#one-possible-solution)
 -   [Conclusions](#conclusions)
     -   [Simple filtering and error
         handling](#simple-filtering-and-error-handling)
@@ -516,6 +517,328 @@ polygons of these regions. However, the NUTS correspondence table do not
 include them, so there is no recourse to check their consistency. They
 sometimes pop up, sometimes not, so make sure if you have too many
 observations, check for them.
+
+One possible solution
+---------------------
+
+The following R code is based on the
+[tidyverse](https://www.tidyverse.org/) packages and uses non-standard
+evaluation. This is a possible solution to solve (most of) the problem.
+
+You need to run the first chunks to make the Eurostat correspondence
+table tidy (See: [Hadley Wickham: Tidy
+Data](https://vita.had.co.nz/papers/tidy-data.pdf)).
+
+As you can see, this is not for the faint heart, and I do not guarrantee
+that it works with all data perfectly. It is more of an illustration of
+the problem and a list of ideas how you can improve the data quality if
+you have to work with historical data or with panel data. I do not think
+that this should be included in the eurostat package, rather a
+constructive discussion should start with Eurostat.
+
+    require(tidyverse)
+    #You need the metadata information from the first chunk if you run this,
+    #i.e. you must read the Excel correspondence tables and tidy them up.
+
+    correct_nuts_labelling <- function ( dat ) { 
+
+      tmp <- dat  %>%
+        mutate_if ( is.factor, as.character ) %>%
+        left_join ( unchanged_regions %>% 
+                      select ( code16 ) %>%
+                      rename ( geo = code16 ) %>%
+                      mutate ( change = 'unchanged'), by = 'geo') %>%
+        mutate ( change  = ifelse (  country_code %in% c("CH", "TR", "NO",
+                                                         "MK", "IS", "LI", 
+                                                         "AD", "SM", "VA", 
+                                                         "XK", "RS", "ME",
+                                                         "BA", "AL"), 
+                                     'not_EU', change)) %>%
+        mutate_if ( is.factor, as.character ) %>%
+        filter ( stringr::str_sub(geo, -3,-1) != "ZZZ", 
+                 stringr::str_sub(geo, -2,-1) != "ZZ")
+      
+      tmp_eu_only <- tmp %>% filter ( change != "not_eu")
+      
+      ##The ZZZ parts filter out data that is not related to NUTS territorial
+      ##units and likely to be missing. This can avoid a lot of compliation
+      ##during imputation or mapping.
+      
+      missing_2016_codes <- nuts_2016_codes [which (! nuts_2016_codes %in% tmp_eu_only$geo )]
+      missing_2016_codes <- missing_2016_codes [ which (stringr::str_sub(missing_2016_codes, -3, -1) != "ZZZ")]
+      missing_2016_codes <- missing_2016_codes [ which (stringr::str_sub(missing_2016_codes, -2, -1) != "ZZ")]
+      
+      #Here are you missing NUTS1 and NUTS2 units.  
+      #If you want to, you further add NUTS3 here to the code.
+      missing_nuts1_2016 <- missing_2016_codes [ which (nchar(missing_2016_codes) == 3)]
+      missing_nuts2_2016 <- missing_2016_codes [ which (nchar(missing_2016_codes) == 4)]
+      
+      
+      tmp2 <- tmp %>%
+        left_join ( changed_regions %>% 
+                      select ( code16, change ) %>%
+                      rename ( geo = code16 ), 
+                    by = c("geo", "change")) 
+      
+      ## This is the data that can be used without risk
+      correctly_labelled_unchanged <- tmp2 %>% filter ( !is.na(change))
+      
+      tmp3 <- tmp2 %>% filter ( is.na( change )) 
+      
+      ## These are the regions that were changed but they are
+      ## correctly labelled
+      correctly_labelled_changed <- tmp3 %>% 
+        filter ( geo %in% changed_regions$code16 )
+      
+      ## There are the incorrectly labelled observations in your 
+      ## dataset.
+      incorrectlly_labelled_nuts13 <- tmp3 %>%
+        filter ( geo %in% changed_regions$code13 )
+      
+      ## You need to treat the NUTS1 level first.
+      incorrectly_labelled_nuts1_2013 <- incorrectlly_labelled_nuts13 %>%
+        filter ( nchar (as.character(geo)) == 3) %>%
+        select ( -change ) %>%
+        left_join ( nuts1_correspondence %>%
+                      rename ( geo = code13 ) %>%
+                      filter ( !is.na(geo)) %>%
+                      select ( geo, code16, change, resolution ), 
+                    by = 'geo') %>%
+        filter ( change != "discontinued") %>%
+        mutate ( problem_code = geo ) %>%
+        mutate  ( geo =  code16)
+      
+      nuts1_missings <- missing_nuts1_2016  [ which ( missing_nuts1_2016 %in% incorrectly_labelled_nuts1_2013$geo)] 
+
+      ## Probably you have recovered some NUTS1 regions.
+      found_nuts1 <- incorrectly_labelled_nuts1_2013 %>%
+        filter (  geo %in% missing_nuts1_2016  )
+      message ( "Found ", length(unique(found_nuts1$geo)), " NUTS1 regions")
+      
+      ## Repeat to NUTS2 regions.
+      incorrectly_labelled_nuts2_2013 <- incorrectlly_labelled_nuts13 %>%
+        filter ( nchar (as.character(geo)) == 4) %>%
+        select ( -change ) %>%
+        left_join ( nuts2_correspondence %>%
+                      rename ( geo = code13 ) %>%
+                      filter ( !is.na(geo)) %>%
+                      select ( geo, code16, change, resolution ), 
+                    by = 'geo') %>%
+        filter ( change != "discontinued") %>%
+        mutate ( problem_code = geo ) %>%
+        mutate  ( geo =  code16)
+      
+      recoded_nuts2_2013 <- incorrectly_labelled_nuts2_2013 %>%
+        filter ( change  == "recoded")
+      
+      found_nuts2 <- recoded_nuts2_2013 %>%
+        filter (  geo %in% missing_nuts2_2016  )
+      
+      message ( "Found ", length(unique(found_nuts2$geo)), " NUTS2 regions")
+      
+      ## You can here pause for a minute.  In some cases, you may want to use 
+      ## your NUTS1 level data imputing the missing NUTS2 data. This is a
+      ## good idea if you are not working with atomic count or financial 
+      ## information, but relational data like computers per capita.
+      
+      
+      ## Now let us join the safe observations and see if we can do 
+      ## actual imputation. -------------------------------------------
+      if ( length(unique(found_nuts2$geo)) + length(unique(found_nuts1$geo)) == 0) {
+        message ( "There is no data found that can be further arranged. Data is returned in its original format")
+        return ( dat )
+      }
+      
+      
+      
+      join_by <- names ( correctly_labelled_unchanged ) 
+      join_by <- join_by [which ( join_by %in% names(correctly_labelled_changed) )]
+      
+      join_by2 <-  names ( correctly_labelled_unchanged )
+      join_by2 <- join_by2 [which ( join_by2 %in% names(found_nuts1))]
+
+      so_far_joined <- full_join ( correctly_labelled_unchanged, 
+                            correctly_labelled_changed, 
+                            by = join_by ) %>%
+        full_join ( found_nuts1, by = join_by2 ) 
+      
+      ##The number of columns will increase
+      join_by3 <-  names ( so_far_joined )
+      join_by3 <- join_by3 [which ( join_by3 %in% names(found_nuts2))]
+      
+      so_far_joined <- so_far_joined  %>%
+        full_join ( found_nuts2, by = join_by3 )
+      
+
+      ## We have correspondence data only for (most of) the EU countries.
+      remaining_eu_data <- tmp %>%
+        filter ( ! geo %in% so_far_joined$geo) 
+      
+      ## These are the known entities that may be used in corrections.
+      ## Make sure that you have at least an empty row for them.
+      
+      used_in_correction <- c("FR24",
+                              "FR26","FR43",
+                              "FR23","FR25",
+                              "FR22","FR30",
+                              "FR21","FR41","FR42",
+                              "FR51",
+                              "FR52",
+                              "FR53", "FR61", "FR63",
+                              "FR62", "FR81",
+                              "FR7",
+                              "FR82",
+                              "FR83",
+                              "FRA", 
+                              "PL11","PL33",
+                              "PL3", 
+                              "PL12", 
+                              "IE023", "IE024", "IE025", 
+                              "LT00", "LT00A", 
+                              "UKM2",  
+                              "UKM31", "UKM34", "UKM35", "UKM36",
+                              "UKM24", "UKM32", "UKM33", "UKM37", "UKM38", 
+                              "HU102", "HU101"
+      )
+      
+      ## This is the candidate subset for imputation----------------------
+      correct_with_correspondence <- remaining_eu_data %>%
+        select ( time, country_code, years, indicator, geo, values ) 
+      
+      ## The data has time and space dimension, so corrections have to be 
+      ## made for each year in the dataset, especially because usually 
+      ## the labelling is not consistent through the years.
+      
+      correspondence_by_year <- function (df, this_time ) {
+        df <- df %>% filter ( time == this_time )
+        
+        ##To make joining possible, you must have at least empty rows
+        ##for the changed regions.
+        ##Do not forget that the Eurostat codes are not ISO-conform in
+        ##the case of the United Kingdom and Greece. 
+        ##This applies to the regional codes, too. 
+        complete_with_missing <- tibble (
+          geo  = used_in_correction[which ( ! unique(used_in_correction) %in% df$geo)], 
+          country_code = case_when ( 
+            substr(geo,1,2) == "UK" ~ "GB",
+            substr(geo,1,2) == "EL" ~ "GR",
+            TRUE ~ substr(geo,1,2)), 
+          values = NA_real_, 
+          indicator  = NA_character_, 
+          time = this_time, 
+          years = as.numeric(substr(as.character (this_time),1,4))
+        )
+        
+        ##Try all possible improvements, though most of this will be missing
+        ##in most datasets. 
+        correct_with_correspondence <- df %>%
+          full_join (., complete_with_missing, 
+                     by = c("indicator", "geo", "values", "years",
+                            "time", "country_code") ) %>%
+          fill ( indicator )  %>%
+          spread ( geo, values  ) %>%
+          mutate ( FRB=FR24,
+                   FRC=FR26+FR43,
+                   FRD=FR23+FR25,
+                   FRE=FR22+FR30,
+                   FRF=FR21+FR41+FR42,
+                   FRG=FR51,
+                   FRH=FR52,
+                   FRI=FR53+FR61+FR63,
+                   FRJ=FR62+FR81,
+                   FRK=FR7,
+                   FRL=FR82,
+                   FRM=FR83,
+                   FRY=FRA, 
+                   LT02=LT00-LT00A,
+                   UKM7=UKM2-UKM24,
+                   UKM8=UKM31+UKM34+UKM35+UKM36,
+                   UKM9=UKM24+UKM32+UKM33+UKM37+UKM38, 
+                   PL7=PL11+PL33,
+                   PL8=PL3-PL33,
+                   PL9=PL12,
+                   IE05=IE023+IE024+IE025,
+                   HU11=HU101,
+                   HU12=HU102) %>%
+          gather ( geo, values, -one_of("indicator", "country_code", "time", "years")) %>%
+          filter ( !is.na(values)) %>%
+          filter ( geo %in% c(missing_nuts1_2016, missing_nuts2_2016 ))
+        
+        #Return the long form table for the given year.
+        correct_with_correspondence
+      }
+      
+      for ( i in seq_along(unique(correct_with_correspondence$time))) {
+        this_time <- unique(correct_with_correspondence$time)[i]
+        if ( i == 1 ) {
+          corrected_with_correspondence <- correspondence_by_year (correct_with_correspondence, 
+                                                                   this_time = this_time ) 
+        } else {
+          tmp <- correspondence_by_year (correct_with_correspondence, 
+                                         this_time = this_time ) 
+          if ( is.null(tmp)) next 
+          if ( !nrow(tmp)==0 ) {
+            corrected_with_correspondence <- full_join (
+              corrected_with_correspondence ,tmp,
+              by = c("time", "country_code", "years", "indicator",
+                     "geo", "values")) 
+          } 
+          
+        } #end of else
+      } #end of loop
+      
+      ## There are cases where the correspondence table is silent, or
+      ## I have not found a solution yet. 
+      ## Let us give a warning about them.
+      
+      incorrectly_labelled_unknown <- tmp3 %>%
+        filter ( ! geo %in% c(changed_regions$code16, changed_regions$code13))
+      
+      if ( nrow(incorrectly_labelled_unknown ) > 0 ) {
+          message ( "The following labels do not conform the NUTS2016 definition: ", paste(
+          unique(incorrectly_labelled_unknown$geo), collapse = "," )
+        )
+        warning ("Unknown labels found")
+      } 
+      
+      ##Now you may have identical data with NUTS2013 and NUTS2016 geocodes
+      ##if the labels are the same.
+      corrected_dataset <- full_join ( 
+        so_far_joined,  corrected_with_correspondence, 
+        by = c("geo", "values", "indicator", 'years', 
+               'time', 'country_code') ) %>%
+        fill ( unit ) %>%
+        add_count ( geo, time )
+      
+      if ( any(corrected_dataset$n>1)) {
+        message("Duplications occured, probably because of the relabelling.")
+        }
+      
+      ## Hopefully that is the only reason of the duplication, which 
+      ## is the case if not only the time and geo variable but the 
+      ## actual value of the statistical indicator matches.
+      corrected_dataset <- corrected_dataset %>% select (-n) %>%
+        ungroup() %>%
+        distinct ( geo, time, values, .keep_all = TRUE) %>%
+        add_count ( geo, time )
+      
+      if ( any(corrected_dataset$n>1)) {
+        # You can add here further exception handling code if you want.
+        warning("The duplications could not be resolved fully, please review manually")
+      } else {
+       message ("The duplications were resolved successfully.")  
+      }
+      
+      ##To document your work, here is the log file for this regional
+      ##statistical product.
+      message ( "Corrections: ", paste(
+        c(missing_nuts1_2016, missing_nuts2_2016 ) [c(missing_nuts1_2016, missing_nuts2_2016 ) %in%  corrected_dataset$geo], 
+        collapse = ", "
+      ))
+      
+      ## And now return the results:
+      corrected_dataset
+    }
 
 Conclusions
 -----------
