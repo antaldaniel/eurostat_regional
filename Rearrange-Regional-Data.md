@@ -336,6 +336,42 @@ a fortunate arrangement that Eurostat should keep and expand in the
 future with better metadata. In this case, usually you have a lot of
 information present to correct the some problems.
 
+For example, in
+[isoc\_r\_iuse\_i](https://appsso.eurostat.ec.europa.eu/nui/show.do?dataset=isoc_r_iuse_i&lang=en),
+you find the following geo units that do not conform the current,
+NUTS2016 definion, and you cannot correct them on the basis of the
+correspondence table, because it does not contain in the current version
+information about Slovenia and Greece: SI01,SI02,EL1,EL2.
+
+However, the following regions can be corrected: FRB, FRC, FRD, FRE,
+FRF, FRG, FRH, FRI, FRJ, FRK, FRL, FRM, FRY, PL2, PL4, PL5, PL6, PL7,
+PL8, PL9, IE04, IE05, IE06, FRB0, FRC1, FRC2, FRD1, FRD2, FRE1, FRE2,
+FRF1, FRF2, FRF3, FRG0, FRH0, FRI1, FRI2, FRI3, FRJ1, FRJ2, FRK1, FRK2,
+FRL0, FRM0, FRY1, FRY2, FRY3, FRY4, LT01, LT02, HU11, HU12.
+
+In this case, with care you can add 4 NUTS1 regions to your dataset.
+
+The usual problem with information society indicators is that they do
+not contain NUTS2 level information for larger countries. In order to
+avoid unnecessary data loss, Eurostat (correctly) decided to report
+NUTS1 level data for large countries and NUTS2 level data for smaller
+countries. As far as I know the reason is that the microdata are surveys
+with fixed 1000-1500 national sample size, which would allow a regional
+breakup in the case of Estonia on NUTS3 level but only at NUTS1 level in
+Great Britain and Germany. The way the samples are designed that they
+must be representative for Northern Ireland, which is a NUTS2 region,
+and therefore in the case of the UK you have inconsistent NUTS levels
+within a single country.
+
+While the best representation of the data is what Eurostat publishes, a
+lot of warnings would be required here in the title of the product and
+the metadata. If you start to join this nominally NUTS2 datasets with
+other NUTS2 data, you will immediately loose the large member states!
+This is actually a very strong case to make all regional data products
+cross-level, i.e. whenever a data is avaiable on NUTS2 level, it should
+be reported in the same product on NUTS1 and NUTS0 levels, too. \[^I
+will come back to this problem later.\]
+
 ### Small country problems
 
 Malta and Luxembourg are much smaller than the provinces of Germany, or
