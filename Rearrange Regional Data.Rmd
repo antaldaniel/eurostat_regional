@@ -4,9 +4,9 @@ author: "Daniel Antal, CFA"
 header-includes:
 date: "9/19/2019"
 output:
+  html_document: default
   md_document:
     toc: true
-  html_document: default
 ---
 
 ```{r setup, include=FALSE}
