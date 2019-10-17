@@ -21,6 +21,7 @@
         handling](#simple-filtering-and-error-handling)
     -   [Warnings](#warnings)
     -   [Consultation with Eurostat](#consultation-with-eurostat)
+    -   [NUTS Converter](#nuts-converter)
 
 Working with Eurostat Regional Data
 -----------------------------------
@@ -614,8 +615,8 @@ other data.
       missing_2016_codes <- missing_2016_codes [ which (stringr::str_sub(missing_2016_codes, -3, -1) != "ZZZ")]
       missing_2016_codes <- missing_2016_codes [ which (stringr::str_sub(missing_2016_codes, -2, -1) != "ZZ")]
       
-      #Here are you missing NUTS1 and NUTS2 units.  
-      #If you want to, you further add NUTS3 here to the code.
+      #Here are your missing NUTS1 and NUTS2 units.  
+      #If you want to, you can further add NUTS3 here to the code.
       missing_nuts1_2016 <- missing_2016_codes [ which (nchar(missing_2016_codes) == 3)]
       missing_nuts2_2016 <- missing_2016_codes [ which (nchar(missing_2016_codes) == 4)]
       
@@ -627,7 +628,7 @@ other data.
                     by = c("geo", "change")) 
       
       ## This is the data that can be used without risk
-      correctly_labelled_unchanged <- tmp2 %>% filter ( !is.na(change))
+      correctly_labelled_unchanged <- tmp2 %>% filter ( !is.na(change) )
       
       tmp3 <- tmp2 %>% filter ( is.na( change )) 
       
@@ -685,7 +686,8 @@ other data.
       ## You can here pause for a minute.  In some cases, you may want to use 
       ## your NUTS1 level data imputing the missing NUTS2 data. This is a
       ## good idea if you are not working with atomic count or financial 
-      ## information, but relational data like computers per capita.
+      ## information, but instead with relational data like 
+      ## computers per capita.
       
       
       ## Now let us join the safe observations and see if we can do 
@@ -694,8 +696,6 @@ other data.
         message ( "There is no data found that can be further arranged. Data is returned in its original format")
         return ( dat )
       }
-      
-      
       
       join_by <- names ( correctly_labelled_unchanged ) 
       join_by <- join_by [which ( join_by %in% names(correctly_labelled_changed) )]
@@ -717,8 +717,10 @@ other data.
       
 
       ## We have correspondence data only for (most of) the EU countries.
+      ## So far, Eurostat did not provide any correspondence information 
+      ## on Slovenia and Greece, and I wrote them to do it. 
       remaining_eu_data <- tmp %>%
-        filter ( ! geo %in% so_far_joined$geo) 
+        filter ( ! geo %in% so_far_joined$geo ) 
       
       ## These are the known entities that may be used in corrections.
       ## Make sure that you have at least an empty row for them.
@@ -751,9 +753,9 @@ other data.
       correct_with_correspondence <- remaining_eu_data %>%
         select ( time, country_code, years, indicator, geo, values ) 
       
-      ## The data has time and space dimension, so corrections have to be 
-      ## made for each year in the dataset, especially because usually 
-      ## the labelling is not consistent through the years.
+      ## The data has time and space dimensions, so corrections must be 
+      ## made for each year in the dataset, especially because 
+      ## the labelling is not always consistent through the years.
       
       correspondence_by_year <- function (df, this_time ) {
         df <- df %>% filter ( time == this_time )
@@ -763,6 +765,7 @@ other data.
         ##Do not forget that the Eurostat codes are not ISO-conform in
         ##the case of the United Kingdom and Greece. 
         ##This applies to the regional codes, too. 
+        
         complete_with_missing <- tibble (
           geo  = used_in_correction[which ( ! unique(used_in_correction) %in% df$geo)], 
           country_code = case_when ( 
@@ -776,7 +779,8 @@ other data.
         )
         
         ##Try all possible improvements, though most of this will be missing
-        ##in most datasets. 
+        ##in most datasets.
+        
         correct_with_correspondence <- df %>%
           full_join (., complete_with_missing, 
                      by = c("indicator", "geo", "values", "years",
@@ -817,8 +821,7 @@ other data.
       for ( i in seq_along(unique(correct_with_correspondence$time))) {
         this_time <- unique(correct_with_correspondence$time)[i]
         if ( i == 1 ) {
-          corrected_with_correspondence <- correspondence_by_year (correct_with_correspondence, 
-                                                                   this_time = this_time ) 
+          corrected_with_correspondence <- correspondence_by_year (correct_with_correspondence, this_time = this_time ) 
         } else {
           tmp <- correspondence_by_year (correct_with_correspondence, 
                                          this_time = this_time ) 
@@ -963,3 +966,21 @@ should be recommended to Eurostat to change it.
     research techniques in academia and among professional users,
     disappearing datasets, or datasets that are not renamed but changed
     in essence cause extraordinary amount of debugging work.
+
+-   I got in touch with Eurostat on 19.09.2019, and they gave me an
+    intermediate and a final answer, however, the final answer only says
+    that “The Eurostat’s unit responsible for the NUTS Regulation is
+    investigating on this.”
+
+### NUTS Converter
+
+The [NUTS Converter](https://urban.jrc.ec.europa.eu/nutsconverter/#/) is
+an open, web-based tool allowing the conversion of European regional
+statistical data between different versions of the Nomenclature of
+Territorial Units for Statistics (NUTS) classification.
+
+The tool is not open source and not very well documented, but I will
+investigate if it can provide a metadata table that could be used
+programatically. That would, however, not solve the problem that some of
+Eurostat’s metadata is inherently faulty, so conversion may not be
+possible or may be misleading.

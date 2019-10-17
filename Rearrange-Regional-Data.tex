@@ -1,0 +1,1028 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Rearranging Regional Data},
+            pdfauthor={Daniel Antal, CFA},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Rearranging Regional Data}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Daniel Antal, CFA}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{9/19/2019}
+
+
+\begin{document}
+\maketitle
+
+\hypertarget{working-with-eurostat-regional-data}{%
+\subsection{Working with Eurostat Regional
+Data}\label{working-with-eurostat-regional-data}}
+
+The \href{http://ropengov.github.io/eurostat/}{eurostat} R package
+creates an excellent framework to retrieve and analyze European
+statistical data in a reproducible manner
+\href{https://journal.r-project.org/archive/2017/RJ-2017-019/RJ-2017-019.pdf}{Leo
+Lahti, Janne Huovari, Markus Kainu and Przemysław Biecek: Retrieval and
+Analysis of Eurostat Open Data with the eurostat Package} It is not a
+product that is anyway associated with Eurostat, but it provides a very
+consistent approach to use Eurostat's statistical products.
+
+\begin{figure}
+\centering
+\includegraphics{https://ec.europa.eu/eurostat/documents/345175/501899/Nuts-history}
+\caption{NUTS}
+\end{figure}
+
+My supposedly reproducible research codes do not work from last year,
+when the same products with the same IDs were reported under the
+\texttt{NUTS2013} region boundary definitions. After spending countless
+days with fixing my datasets, I learned a lot about the problematic
+transition from \texttt{NUTS2013} to \texttt{NUTS2016} data products.
+I'd like to create a package vignette, and possibly some helper
+functions to save many hours of work for users of regional datasets.
+
+\hypertarget{the-correspondence-table}{%
+\subsection{The Correspondence Table}\label{the-correspondence-table}}
+
+The Correspondence table is supposed to explain how NUTS regions have
+changed and give guidance on what to do with the data. This is a
+multi-sheet Excel file that is not tidy, and it is not complete. At the
+time of writing this article, the changes in Slovenia and Greece are not
+in the table.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Download the latest Eurostat correspondence file.}
+\CommentTok{#Change the subdirectory as you wish, I download it to 'data-raw'.}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\StringTok{ }\KeywordTok{dir.exists}\NormalTok{(}\StringTok{'data-raw'}\NormalTok{)) }\KeywordTok{dir.create}\NormalTok{(}\StringTok{'data-raw'}\NormalTok{)}
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\StringTok{ }\KeywordTok{file.exists}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(}\StringTok{'data-raw'}\NormalTok{ ,}\StringTok{'NUTS2013-NUTS2016.xlsx'}\NormalTok{))) \{}
+  \KeywordTok{download.file}\NormalTok{ ( }\DataTypeTok{url =} \StringTok{'https://ec.europa.eu/eurostat/documents/345175/629341/NUTS2013-NUTS2016.xlsx'}\NormalTok{, }\DataTypeTok{destfile =} \KeywordTok{file.path}\NormalTok{(}\StringTok{'data-raw'}\NormalTok{, }\StringTok{'NUTS2013-NUTS2016.xlsx'}\NormalTok{ ))}
+\NormalTok{\}}
+
+\CommentTok{#The Excel file downloaded from Eurostat may or may not work on your system. If you are unlucky, you can try my copy. }
+\ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\StringTok{ }\KeywordTok{file.exists}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(}\StringTok{'data-raw'}\NormalTok{ ,}\StringTok{'NUTS2013-NUTS2016.xlsx'}\NormalTok{))) \{}
+  \KeywordTok{download.file}\NormalTok{ ( }\DataTypeTok{url =} \StringTok{'https://github.com/antaldaniel/eurostat_regional/raw/master/data-raw/NUTS2013-NUTS2016.xlsx'}\NormalTok{, }\DataTypeTok{destfile =} \KeywordTok{file.path}\NormalTok{(}\StringTok{'data-raw'}\NormalTok{, }\StringTok{'NUTS2013-NUTS2016.xlsx'}\NormalTok{ ))}
+\NormalTok{\}}
+
+\NormalTok{regions <-}\StringTok{ }\NormalTok{readxl}\OperatorTok{::}\KeywordTok{read_excel}\NormalTok{( }\KeywordTok{file.path}\NormalTok{(}\StringTok{'data-raw'}\NormalTok{, }\StringTok{'NUTS2013-NUTS2016.xlsx'}\NormalTok{),}
+                   \DataTypeTok{sheet =} \StringTok{'NUTS2013-NUTS2016'}\NormalTok{, }
+                   \DataTypeTok{skip =} \DecValTok{1}\NormalTok{ , }\DataTypeTok{col_names =}\NormalTok{ T) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{select}\NormalTok{ (}\DecValTok{1}\OperatorTok{:}\DecValTok{12}\NormalTok{) }\OperatorTok{%>%}\StringTok{  }\CommentTok{#Extra unusued columns that will give a warning}
+\StringTok{  }\NormalTok{purrr}\OperatorTok{::}\KeywordTok{set_names}\NormalTok{(., }\KeywordTok{c}\NormalTok{(}\StringTok{"rowid"}\NormalTok{, }\StringTok{"code13"}\NormalTok{, }\StringTok{"code16"}\NormalTok{, }
+                        \StringTok{"country_name"}\NormalTok{, }\StringTok{'nuts1_name'}\NormalTok{, }\StringTok{'nuts2_name'}\NormalTok{,}
+                        \StringTok{'nuts3_name'}\NormalTok{, }\StringTok{'change'}\NormalTok{, }\StringTok{'nuts_level'}\NormalTok{, }
+                        \StringTok{'sort_countries'}\NormalTok{, }\StringTok{'sort_13'}\NormalTok{, }\StringTok{'sort_16'}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{ ( }\DataTypeTok{name =} \KeywordTok{case_when}\NormalTok{ ( }
+    \OperatorTok{!}\KeywordTok{is.na}\NormalTok{(nuts1_name) }\OperatorTok{~}\StringTok{ }\NormalTok{nuts1_name, }
+    \OperatorTok{!}\KeywordTok{is.na}\NormalTok{(nuts2_name) }\OperatorTok{~}\StringTok{ }\NormalTok{nuts2_name,}
+    \OperatorTok{!}\KeywordTok{is.na}\NormalTok{(nuts3_name) }\OperatorTok{~}\StringTok{ }\NormalTok{nuts3_name, }
+    \OperatorTok{!}\KeywordTok{is.na}\NormalTok{(country_name)}\OperatorTok{~}\StringTok{ }\NormalTok{country_name,}
+    \OtherTok{TRUE} \OperatorTok{~}\StringTok{ }\OtherTok{NA_character_}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## New names:
+## * `` -> ...1
+## * `` -> ...13
+## * `` -> ...14
+## * `` -> ...15
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Our reference vector are the NUTS2016 codes}
+\NormalTok{nuts_}\DecValTok{2016}\NormalTok{_codes <-}\StringTok{ }\KeywordTok{unique}\NormalTok{ (regions}\OperatorTok{$}\NormalTok{code16)}
+\end{Highlighting}
+\end{Shaded}
+
+It is a good idea to have a comprehensive look of what happened, because
+each data set may have a different problem. I organized the regions into
+\texttt{unchanged\_regions}, \texttt{changed\_regions} and
+\texttt{discontinued\_regions}. These tables will help in correcting the
+data. Unfortunately, I found some regions in Slovenia and Greece that
+are not in any of these categories.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{##In these cases, the code13 == code16}
+\NormalTok{unchanged_regions <-}\StringTok{ }\NormalTok{regions }\OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{ ( }\KeywordTok{is.na}\NormalTok{(change)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{fill}\NormalTok{ ( nuts1_name ) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{fill}\NormalTok{ ( nuts2_name ) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{select}\NormalTok{ ( code13, code16, name )}
+
+\CommentTok{## In these cases code13 != code16}
+\NormalTok{changed_regions <-}\StringTok{ }\NormalTok{regions }\OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{ ( }\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(change)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{fill}\NormalTok{ ( nuts1_name ) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{fill}\NormalTok{ ( nuts2_name ) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{select}\NormalTok{ ( code13, code16, name, nuts_level, change )}
+
+\NormalTok{discontinued_regions  <-}\StringTok{ }\NormalTok{changed_regions }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{ ( change }\OperatorTok{==}\StringTok{ "discontinued"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{nuts1-correspondence}{%
+\subsubsection{NUTS1 Correspondence}\label{nuts1-correspondence}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{nuts1_correspondence <-}\StringTok{ }\NormalTok{readxl}\OperatorTok{::}\KeywordTok{read_excel}\NormalTok{( }\KeywordTok{file.path}\NormalTok{(}\StringTok{'data-raw'}\NormalTok{, }\StringTok{'NUTS2013-NUTS2016.xlsx'}\NormalTok{),}
+ \DataTypeTok{sheet =} \StringTok{'Correspondence NUTS-1'}\NormalTok{, }
+ \DataTypeTok{skip =} \DecValTok{0}\NormalTok{ , }\DataTypeTok{col_names =}\NormalTok{ T) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{set_names}\NormalTok{ ( ., }\KeywordTok{c}\NormalTok{(}\StringTok{"code13"}\NormalTok{, }\StringTok{"code16"}\NormalTok{, }\StringTok{"nuts1_name"}\NormalTok{, }\StringTok{"change"}\NormalTok{, }\StringTok{"resolution"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate_if}\NormalTok{ ( is.factor, as.character )}
+
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{ (}\KeywordTok{head}\NormalTok{(nuts1_correspondence,}\DecValTok{6}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule
+code13 & code16 & nuts1\_name & change & resolution\tabularnewline
+\midrule
+\endhead
+NA & FRB & CENTRE --- VAL DE LOIRE & new NUTS 1 region, identical to
+ex-NUTS 2 region FR24 & FRB=FR24\tabularnewline
+NA & FRC & BOURGOGNE-FRANCHE-COMTÉ & new NUTS 1 region, merge of ex-NUTS
+2 regions FR26 and FR43 & FRC=FR26+FR43\tabularnewline
+NA & FRD & NORMANDIE & new NUTS 1 region, merge of ex-NUTS 2 regions
+FR23 and FR25 & FRD=FR23+FR25\tabularnewline
+NA & FRE & NORD-PAS DE CALAIS-PICARDIE & new NUTS 1 region, merge of
+ex-NUTS 2 regions FR22 and FR30 & FRE=FR22+FR30\tabularnewline
+NA & FRF & ALSACE-CHAMPAGNE-ARDENNE-LORRAINE & new NUTS 1 region, merge
+of ex-NUTS 2 regions FR 21, FR 41 and FR42 &
+FRF=FR21+FR41+FR42\tabularnewline
+NA & FRG & PAYS DE LA LOIRE & new NUTS 1 region, identical to ex-NUTS 2
+region FR51 & FRG=FR51\tabularnewline
+\bottomrule
+\end{longtable}
+
+\hypertarget{nuts2-correspondence}{%
+\subsubsection{NUTS2 Correspondence}\label{nuts2-correspondence}}
+
+Similarly, there is a table for NUTS2 level. You have to beware that all
+NUTS2 regions are contained in wider NUTS1 regions. So there are two
+logically possible cases: a NUTS2 change affected only one NUTS1 region
+(changes were made within a larger region), or it affected several NUTS1
+regions. If you work with data that has both NUTS1 and NUTS2 level
+information, such as any of the internet useage products, for example,
+\texttt{isoc\_r\_iuse\_i}, you must correct NUTS1 and NUTS2 level
+problems consistently.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{nuts2_correspondence <-}\StringTok{ }\NormalTok{readxl}\OperatorTok{::}\KeywordTok{read_excel}\NormalTok{( }
+  \KeywordTok{file.path}\NormalTok{(}\StringTok{'data-raw'}\NormalTok{, }\StringTok{'NUTS2013-NUTS2016.xlsx'}\NormalTok{),                                            }\DataTypeTok{sheet =} \StringTok{'Correspondence NUTS-2'}\NormalTok{,                                            }\DataTypeTok{skip =} \DecValTok{0}\NormalTok{ , }\DataTypeTok{col_names =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{select}\NormalTok{ ( }\DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{ ) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{set_names}\NormalTok{ ( ., }\KeywordTok{c}\NormalTok{(}\StringTok{"code13"}\NormalTok{, }\StringTok{"code16"}\NormalTok{, }\StringTok{"nuts1_name"}\NormalTok{,}
+                   \StringTok{"change"}\NormalTok{, }\StringTok{"resolution"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{ ( }\KeywordTok{is.na}\NormalTok{(code13) }\OperatorTok{+}\StringTok{ }\KeywordTok{is.na}\NormalTok{(code16) }\OperatorTok{<}\StringTok{ }\DecValTok{2}\NormalTok{) }\CommentTok{#The table has empty rows}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## New names:
+## * `` -> ...6
+## * `` -> ...7
+## * `` -> ...8
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{ (}\KeywordTok{head}\NormalTok{(nuts2_correspondence,}\DecValTok{6}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule
+code13 & code16 & nuts1\_name & change & resolution\tabularnewline
+\midrule
+\endhead
+IE01 & NA & Border, Midland and Western & discontinued &
+NA\tabularnewline
+NA & IE04 & Northern and Western & new region & NA\tabularnewline
+IE02 & NA & Southern and Eastern & discontinued & NA\tabularnewline
+NA & IE05 & Southern & new region, made from ex-IE023, IE024 and IE025 &
+IE05=IE023+IE024+IE025\tabularnewline
+NA & IE06 & Eastern and Midland & new region & NA\tabularnewline
+FR24 & FRB0 & Centre --- Val de Loire & recoded and relabelled &
+FRB0=FR24\tabularnewline
+\bottomrule
+\end{longtable}
+
+\hypertarget{nuts3-correspondence}{%
+\subsubsection{NUTS3 Correspondence}\label{nuts3-correspondence}}
+
+The NUTS3 regions are small regions within the NUTS2 regions. There are
+only a few NUTS3 level statistical products available, and in the
+absence of an even lower resolution, most changes at this level cannot
+be reconciled.
+
+However, many corrections on NUTS1 or NUTS2 level require reconciliation
+with the use of NUTS3 data, which, sadly, contains a lot of relabelling
+and other changes. So if you really want to fix everything, you have to
+dwell into the NUTS3 level, too.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{nuts3_correspondence <-}\StringTok{ }\NormalTok{readxl}\OperatorTok{::}\KeywordTok{read_excel}\NormalTok{( }
+  \KeywordTok{file.path}\NormalTok{(}\StringTok{'data-raw'}\NormalTok{, }\StringTok{'NUTS2013-NUTS2016.xlsx'}\NormalTok{),                                            }\DataTypeTok{sheet =} \StringTok{'Correspondence NUTS-3'}\NormalTok{,                                            }\DataTypeTok{skip =} \DecValTok{0}\NormalTok{ , }\DataTypeTok{col_names =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{select}\NormalTok{ ( }\DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{ ) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{set_names}\NormalTok{ ( ., }\KeywordTok{c}\NormalTok{(}\StringTok{"code13"}\NormalTok{, }\StringTok{"code16"}\NormalTok{, }\StringTok{"nuts1_name"}\NormalTok{,}
+                   \StringTok{"change"}\NormalTok{, }\StringTok{"resolution"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{ ( }\KeywordTok{is.na}\NormalTok{(code13) }\OperatorTok{+}\StringTok{ }\KeywordTok{is.na}\NormalTok{(code16) }\OperatorTok{<}\StringTok{ }\DecValTok{2}\NormalTok{) }\CommentTok{#The table has empty rows}
+
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{ (}\KeywordTok{head}\NormalTok{(nuts3_correspondence,}\DecValTok{6}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule
+code13 & code16 & nuts1\_name & change & resolution\tabularnewline
+\midrule
+\endhead
+DE915 & NA & Göttingen & discontinued; merged with ex-DE919 &
+NA\tabularnewline
+DE919 & NA & Osterode am Harz & discontinued; merged with ex-DE915 &
+NA\tabularnewline
+NA & DE91C & Göttingen & new region, merge of ex-DE915 and DE919 &
+DE91C=DE915+DE919\tabularnewline
+DEB16 & DEB1C & Cochem-Zell & boundary shift & NA\tabularnewline
+DEB19 & DEB1D & Rhein-Hunsrück-Kreis & boundary shift &
+NA\tabularnewline
+IE011 & IE041 & Border & boundary shift & NA\tabularnewline
+\bottomrule
+\end{longtable}
+
+\hypertarget{problems-from-inconsistent-nuts-level-data}{%
+\subsection{Problems from inconsistent NUTS level
+data}\label{problems-from-inconsistent-nuts-level-data}}
+
+\hypertarget{inconsistent-levels}{%
+\subsubsection{Inconsistent levels}\label{inconsistent-levels}}
+
+In many cases, the name and/or the metadata description of the
+statistical product refers to NUTS2 level data, but in fact, you receive
+a mixed data table that has data from all NUTS levels.
+
+This may create some extra filtering work, especially if you want to be
+reproducible, tidy, or just want to check consistencies, but this can be
+a fortunate arrangement that Eurostat should keep and expand in the
+future with better metadata. In this case, usually you have a lot of
+information present to correct the some problems.
+
+For example, in
+\href{https://appsso.eurostat.ec.europa.eu/nui/show.do?dataset=isoc_r_iuse_i\&lang=en}{isoc\_r\_iuse\_i},
+you find the following geo units that do not conform the current,
+NUTS2016 definion, and you cannot correct them on the basis of the
+correspondence table, because it does not contain in the current version
+information about Slovenia and Greece: SI01,SI02,EL1,EL2.
+
+However, the following regions can be corrected: FRB, FRC, FRD, FRE,
+FRF, FRG, FRH, FRI, FRJ, FRK, FRL, FRM, FRY, PL2, PL4, PL5, PL6, PL7,
+PL8, PL9, IE04, IE05, IE06, FRB0, FRC1, FRC2, FRD1, FRD2, FRE1, FRE2,
+FRF1, FRF2, FRF3, FRG0, FRH0, FRI1, FRI2, FRI3, FRJ1, FRJ2, FRK1, FRK2,
+FRL0, FRM0, FRY1, FRY2, FRY3, FRY4, LT01, LT02, HU11, HU12.
+
+In this case, with care you can add 4 NUTS1 regions to your dataset.
+
+The usual problem with information society indicators is that they do
+not contain NUTS2 level information for larger countries. In order to
+avoid unnecessary data loss, Eurostat (correctly) decided to report
+NUTS1 level data for large countries and NUTS2 level data for smaller
+countries. As far as I know the reason is that the microdata are surveys
+with fixed 1000-1500 national sample size, which would allow a regional
+breakup in the case of Estonia on NUTS3 level but only at NUTS1 level in
+Great Britain and Germany. The way the samples are designed that they
+must be representative for Northern Ireland, which is a NUTS2 region,
+and therefore in the case of the UK you have inconsistent NUTS levels
+within a single country.
+
+While the best representation of the data is what Eurostat publishes, a
+lot of warnings would be required here in the title of the product and
+the metadata. If you start to join this nominally NUTS2 datasets with
+other NUTS2 data, you will immediately loose the large member states!
+This is actually a very strong case to make all regional data products
+cross-level, i.e.~whenever a data is avaiable on NUTS2 level, it should
+be reported in the same product on NUTS1 and NUTS0 levels, too. {[}\^{}I
+will come back to this problem later.{]}
+
+\hypertarget{small-country-problems}{%
+\subsubsection{Small country problems}\label{small-country-problems}}
+
+Malta and Luxembourg are much smaller than the provinces of Germany, or
+the British home countries Northern Ireland or Wales. Statistical
+regions were designed to create more homogeneous territorial units in
+size and other characteristics. This means that countries smaller than a
+usual NUTS1 region in larger countries do not have a NUTS1 level
+division. Very small countries do not have a NUTS2 division. Cyprus,
+Estonia, Luxembourg, Malta have only NUTS3 divisions.
+
+So, the rule of NUTS regions is NUTS0 \textgreater{}= NUTS1
+\textgreater{}= NUTS2 \textgreater{} NUTS3, where the NUTS0 level stands
+for the largest territorial division, which is national boundary.
+
+In this case, \texttt{LU} = \texttt{LU0} = \texttt{LU00}. If you want to
+have a complete map of NUTS2 regions of Europe, obviously you have to
+treat Luxembourg and the other small member states as NUTS2 regions.
+Provided that you have the data!
+
+There is an inconsistency how the data is present in the datasets, but
+you can almost always find the \texttt{LU} code. If \texttt{LU0} is
+missing, you can just create a copy of the \texttt{LU} data and label it
+\texttt{LU0} on NUTS1 level, and repeat the same as \texttt{LU00} on
+NUTS2 level. It also follows that NUTS0 codes are always made of 2
+characters, NUTS1 is always two alphabetic characters followed by a
+number, and NUTS2 is always two alphabetic followed by 2 numbers.
+
+So far I have shown problems that can be solved with simple filtering or
+relabelling if you understand the hiearchy of NUTS levels. A far more
+serious problem when NUTS2013 and NUTS2016 data got mixed without proper
+metadata.
+
+\hypertarget{problems-of-mislabelling}{%
+\subsection{Problems of Mislabelling}\label{problems-of-mislabelling}}
+
+A typical mislabelling problem is that in the same data/metadata column
+\texttt{geo} you find mixed region codes, following seemingly randomly
+\texttt{NUTS2013} and \texttt{NUTS2016} codes. This is a real error, and
+it requires more than data tiding to fix these problems, up to the level
+they can be fixed.
+
+\hypertarget{recoded-regions}{%
+\subsubsection{Recoded regions}\label{recoded-regions}}
+
+The simplest error is a recoding error. You will most likely run into
+this problem with France, a country that comprehensively changes its
+NUTS units. To avoid confusion, the French altered the alphanumeric
+codes completely, and replaced the letter:letter:number structure of the
+NUTS codes to letter:letter:letter, like instead of using an
+\texttt{FR7} like nomenclature, they use a hexadecimal-like
+\texttt{FRK}. This is a wise move but it is not followed up by the
+Eurostat data.
+
+In many cases, the recoding means that the region did not change, but
+the abbreviated code did. For example, the change is merely
+\texttt{FRK1=FR72}. You have to look up all instances of \texttt{FR72}
+labels in your data, and if they are present, change them to
+\texttt{FRK1}.
+
+In some cases, the name of the regionn changed (should you use them in
+your table, beware), but the region itself is the same. For example, the
+name of \texttt{MAKROREGION\ PÓŁNOCNO-ZACHODNI} was changed, but its
+code, \texttt{PL4} and its boundaries remained the same. Because of many
+possible character encoding problems, I do not recommend the use of
+names in statistical analysis. If you need them in visualizations, add
+them back in the last, visualiztion stage.
+
+For example, the
+\href{https://ec.europa.eu/eurostat/web/products-datasets/product?code=tgs00096}{tgs00096}
+has consistently wrong labels for all French NUTS2 regions. The data in
+this product (Population on 1 January by NUTS 2 region) goes back to
+pre-NUTS2013 definitions, so this is not purely the same problem. The
+earliest data in this product is from 2007, so four NUTS definition
+changes may affect them. (See the
+\href{https://ec.europa.eu/eurostat/web/nuts/history}{history of NUTS}
+on the Eurostat website.)
+
+\hypertarget{discountinued-regions}{%
+\subsubsection{Discountinued regions}\label{discountinued-regions}}
+
+Many regions are discontinued, so you may have data from the
+\texttt{NUTS2013} definition that you will not use in a
+\texttt{NUTS2016} map or analysis. Do not discard these data points yet,
+because you may be able to use them to re-create some missing
+\texttt{NUTS2016} observations.
+
+\hypertarget{changed-regions}{%
+\subsubsection{Changed regions}\label{changed-regions}}
+
+In the correspondence files, you find hints how to solve missing case
+problems. For example, if \texttt{IE05} is missing from your NUTS2
+table, you can try to impute it with the equation
+\texttt{IE05=IE023+IE024+IE025}. In this particular case, because
+\texttt{IE023} is a NUTS3 small regions's code, you have to go down to
+that particular level to impute the missing NUTS2 case. If you are
+lucky, the NUTS3 data is in the dataset (incorrectly labelled as NUTS2),
+or it is available from a NUTS3-level product.
+
+There are a few extra caveats here:
+
+\begin{itemize}
+\item
+  You can technically do the imputation if the change does not mean a
+  change of NUTS3 boundaries, only a rearrangement of constituent lower
+  level boundaries. In this case, \emph{the changes are additive}, and
+  you can impute the data \emph{provided the data itself is additive}.
+  You can add together population numbers or euro figures.
+\item
+  You cannot get the missing data with addition and subtraction in the
+  case the data is not atomic, and therefore it is not additive. You
+  cannot add or subtracted population density or euro per capita
+  figures. In this case, you can only do the imputation if you
+  additively come up with euro and population figures for
+  \texttt{IE023+IE024+IE025}, and divide the result.
+\item
+  If the change is not a re-arrangement of lower level, lower resolution
+  data, than you cannot come to any precise formula to fill in the
+  missing observation.
+\item
+  You will not be able to fill the missing observation when any of the
+  constituent data is unavailable. You will not be able to get the
+  \texttt{IE05} data if any of \texttt{IE023} or \texttt{IE024} or
+  \texttt{IE025} is missing.
+\end{itemize}
+
+\hypertarget{special-territorial-units}{%
+\subsection{Special territorial units}\label{special-territorial-units}}
+
+\hypertarget{extraterritorial-units}{%
+\subsubsection{Extraterritorial units}\label{extraterritorial-units}}
+
+Some NUTS codes end with \texttt{Z}, such as \texttt{ITZ}, \texttt{ITZZ}
+and \texttt{ITZZZ}, in this case, extra-regional data for Italy. You can
+treat this as a kind of a correction raw, and it usually, or probably
+always empty in the case of regional statistics. It is used for data
+that cannot be connected to a region.
+
+However, the fact that they are always \texttt{NA} values can cause
+problems with imputation algorithms, so the best practice is to filter
+these empty rows out.
+
+\hypertarget{non-eu-member-states}{%
+\subsubsection{Non-EU member states}\label{non-eu-member-states}}
+
+It is a welcome development that more and more regional statistics
+include EEA members, candidate or potential candidate countries.
+Sometimes you can find regional data about Albania, Andora,
+Bosnia-Herzegovina, Iceland, Kosovo, Lichtenstein, Montenegro, North
+Macedonia, Serbia, Switzerland, Turkey and Norway, and probably further
+states, too.
+
+If the coding is correct, you can easily put the data on a map, too,
+because the maps that are used by the \texttt{eurostat} package contain
+the polygons of these regions. However, the NUTS correspondence table do
+not include them, so there is no recourse to check their consistency.
+They sometimes pop up, sometimes not, so make sure if you have too many
+observations, check for them.
+
+\hypertarget{one-possible-solution}{%
+\subsection{One possible solution}\label{one-possible-solution}}
+
+The following R code is based on the
+\href{https://www.tidyverse.org/}{tidyverse} packages and uses
+non-standard evaluation. This is a possible solution to solve (most of)
+the problem.
+
+You need to run the first chunks to make the Eurostat correspondence
+table tidy (See:
+\href{https://vita.had.co.nz/papers/tidy-data.pdf}{Hadley Wickham: Tidy
+Data}).
+
+As you can see, this is not for the faint heart, and I do not guarrantee
+that it works with all data perfectly. It is more of an illustration of
+the problem and a list of ideas how you can improve the data quality if
+you have to work with historical data or with panel data. I do not think
+that this should be included in the eurostat package, rather a
+constructive discussion should start with Eurostat.
+
+The following function requires to bring the Eurostat regional data into
+a tidy form. The data that you get with
+\texttt{eurostat::get\_eurostat(id\ =\ \textquotesingle{}demo\_r\_d3area\textquotesingle{})}
+is a quasi-long-form data. It is not fully tidy wide, and not fully tidy
+long.
+
+What I do is that I keep \texttt{geo}, \texttt{time}, \texttt{values},
+add a \texttt{description}, create and ISO-conform
+\texttt{country\_code} and \texttt{country} column, and in the case of
+annual data for ease of use, I take the year part out of the
+\texttt{time} variable to \texttt{years}.
+
+Furthermore, whatever variables are left, for example, \texttt{unit},
+\texttt{landuse}, \texttt{cofog}, \texttt{indic\_is},
+\texttt{ind\_type}, etc, are united into a single, unique column name,
+which I call \texttt{indicator}. So, if you want to run my code without
+modifications, do that, but of course, you can use your own column
+structures.
+
+The idea of course is to end up with a table where each unique
+\texttt{geo} and \texttt{time} and\texttt{indicator} have one and only
+one \texttt{value}. This is absolutely necessary to clean up the data,
+and later to join the data with maps or other data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{require}\NormalTok{(tidyverse)}
+\CommentTok{#You need the metadata information from the first chunk if you run this,}
+\CommentTok{#i.e. you must read the Excel correspondence tables and tidy them up.}
+
+\NormalTok{correct_nuts_labelling <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{ ( dat ) \{ }
+
+\NormalTok{  tmp <-}\StringTok{ }\NormalTok{dat  }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{mutate_if}\NormalTok{ ( is.factor, as.character ) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{left_join}\NormalTok{ ( unchanged_regions }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                  }\KeywordTok{select}\NormalTok{ ( code16 ) }\OperatorTok{%>%}
+\StringTok{                  }\KeywordTok{rename}\NormalTok{ ( }\DataTypeTok{geo =}\NormalTok{ code16 ) }\OperatorTok{%>%}
+\StringTok{                  }\KeywordTok{mutate}\NormalTok{ ( }\DataTypeTok{change =} \StringTok{'unchanged'}\NormalTok{), }\DataTypeTok{by =} \StringTok{'geo'}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{mutate}\NormalTok{ ( }\DataTypeTok{change  =} \KeywordTok{ifelse}\NormalTok{ (  country_code }\OperatorTok{%in%}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"CH"}\NormalTok{, }\StringTok{"TR"}\NormalTok{, }\StringTok{"NO"}\NormalTok{,}
+                                                     \StringTok{"MK"}\NormalTok{, }\StringTok{"IS"}\NormalTok{, }\StringTok{"LI"}\NormalTok{, }
+                                                     \StringTok{"AD"}\NormalTok{, }\StringTok{"SM"}\NormalTok{, }\StringTok{"VA"}\NormalTok{, }
+                                                     \StringTok{"XK"}\NormalTok{, }\StringTok{"RS"}\NormalTok{, }\StringTok{"ME"}\NormalTok{,}
+                                                     \StringTok{"BA"}\NormalTok{, }\StringTok{"AL"}\NormalTok{), }
+                                 \StringTok{'not_EU'}\NormalTok{, change)) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{mutate_if}\NormalTok{ ( is.factor, as.character ) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{filter}\NormalTok{ ( stringr}\OperatorTok{::}\KeywordTok{str_sub}\NormalTok{(geo, }\DecValTok{-3}\NormalTok{,}\OperatorTok{-}\DecValTok{1}\NormalTok{) }\OperatorTok{!=}\StringTok{ "ZZZ"}\NormalTok{, }
+\NormalTok{             stringr}\OperatorTok{::}\KeywordTok{str_sub}\NormalTok{(geo, }\DecValTok{-2}\NormalTok{,}\OperatorTok{-}\DecValTok{1}\NormalTok{) }\OperatorTok{!=}\StringTok{ "ZZ"}\NormalTok{)}
+  
+\NormalTok{  tmp_eu_only <-}\StringTok{ }\NormalTok{tmp }\OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{ ( change }\OperatorTok{!=}\StringTok{ "not_eu"}\NormalTok{)}
+  
+  \CommentTok{##The ZZZ parts filter out data that is not related to NUTS territorial}
+  \CommentTok{##units and likely to be missing. This can avoid a lot of compliation}
+  \CommentTok{##during imputation or mapping.}
+  
+\NormalTok{  missing_}\DecValTok{2016}\NormalTok{_codes <-}\StringTok{ }\NormalTok{nuts_}\DecValTok{2016}\NormalTok{_codes [}\KeywordTok{which}\NormalTok{ (}\OperatorTok{!}\StringTok{ }\NormalTok{nuts_}\DecValTok{2016}\NormalTok{_codes }\OperatorTok{%in%}\StringTok{ }\NormalTok{tmp_eu_only}\OperatorTok{$}\NormalTok{geo )]}
+\NormalTok{  missing_}\DecValTok{2016}\NormalTok{_codes <-}\StringTok{ }\NormalTok{missing_}\DecValTok{2016}\NormalTok{_codes [ }\KeywordTok{which}\NormalTok{ (stringr}\OperatorTok{::}\KeywordTok{str_sub}\NormalTok{(missing_}\DecValTok{2016}\NormalTok{_codes, }\DecValTok{-3}\NormalTok{, }\DecValTok{-1}\NormalTok{) }\OperatorTok{!=}\StringTok{ "ZZZ"}\NormalTok{)]}
+\NormalTok{  missing_}\DecValTok{2016}\NormalTok{_codes <-}\StringTok{ }\NormalTok{missing_}\DecValTok{2016}\NormalTok{_codes [ }\KeywordTok{which}\NormalTok{ (stringr}\OperatorTok{::}\KeywordTok{str_sub}\NormalTok{(missing_}\DecValTok{2016}\NormalTok{_codes, }\DecValTok{-2}\NormalTok{, }\DecValTok{-1}\NormalTok{) }\OperatorTok{!=}\StringTok{ "ZZ"}\NormalTok{)]}
+  
+  \CommentTok{#Here are you missing NUTS1 and NUTS2 units.  }
+  \CommentTok{#If you want to, you further add NUTS3 here to the code.}
+\NormalTok{  missing_nuts1_}\DecValTok{2016}\NormalTok{ <-}\StringTok{ }\NormalTok{missing_}\DecValTok{2016}\NormalTok{_codes [ }\KeywordTok{which}\NormalTok{ (}\KeywordTok{nchar}\NormalTok{(missing_}\DecValTok{2016}\NormalTok{_codes) }\OperatorTok{==}\StringTok{ }\DecValTok{3}\NormalTok{)]}
+\NormalTok{  missing_nuts2_}\DecValTok{2016}\NormalTok{ <-}\StringTok{ }\NormalTok{missing_}\DecValTok{2016}\NormalTok{_codes [ }\KeywordTok{which}\NormalTok{ (}\KeywordTok{nchar}\NormalTok{(missing_}\DecValTok{2016}\NormalTok{_codes) }\OperatorTok{==}\StringTok{ }\DecValTok{4}\NormalTok{)]}
+  
+  
+\NormalTok{  tmp2 <-}\StringTok{ }\NormalTok{tmp }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{left_join}\NormalTok{ ( changed_regions }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                  }\KeywordTok{select}\NormalTok{ ( code16, change ) }\OperatorTok{%>%}
+\StringTok{                  }\KeywordTok{rename}\NormalTok{ ( }\DataTypeTok{geo =}\NormalTok{ code16 ), }
+                \DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\StringTok{"geo"}\NormalTok{, }\StringTok{"change"}\NormalTok{)) }
+  
+  \CommentTok{## This is the data that can be used without risk}
+\NormalTok{  correctly_labelled_unchanged <-}\StringTok{ }\NormalTok{tmp2 }\OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{ ( }\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(change))}
+  
+\NormalTok{  tmp3 <-}\StringTok{ }\NormalTok{tmp2 }\OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{ ( }\KeywordTok{is.na}\NormalTok{( change )) }
+  
+  \CommentTok{## These are the regions that were changed but they are}
+  \CommentTok{## correctly labelled}
+\NormalTok{  correctly_labelled_changed <-}\StringTok{ }\NormalTok{tmp3 }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{filter}\NormalTok{ ( geo }\OperatorTok{%in%}\StringTok{ }\NormalTok{changed_regions}\OperatorTok{$}\NormalTok{code16 )}
+  
+  \CommentTok{## There are the incorrectly labelled observations in your }
+  \CommentTok{## dataset.}
+\NormalTok{  incorrectlly_labelled_nuts13 <-}\StringTok{ }\NormalTok{tmp3 }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{filter}\NormalTok{ ( geo }\OperatorTok{%in%}\StringTok{ }\NormalTok{changed_regions}\OperatorTok{$}\NormalTok{code13 )}
+  
+  \CommentTok{## You need to treat the NUTS1 level first.}
+\NormalTok{  incorrectly_labelled_nuts1_}\DecValTok{2013}\NormalTok{ <-}\StringTok{ }\NormalTok{incorrectlly_labelled_nuts13 }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{filter}\NormalTok{ ( }\KeywordTok{nchar}\NormalTok{ (}\KeywordTok{as.character}\NormalTok{(geo)) }\OperatorTok{==}\StringTok{ }\DecValTok{3}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{select}\NormalTok{ ( }\OperatorTok{-}\NormalTok{change ) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{left_join}\NormalTok{ ( nuts1_correspondence }\OperatorTok{%>%}
+\StringTok{                  }\KeywordTok{rename}\NormalTok{ ( }\DataTypeTok{geo =}\NormalTok{ code13 ) }\OperatorTok{%>%}
+\StringTok{                  }\KeywordTok{filter}\NormalTok{ ( }\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(geo)) }\OperatorTok{%>%}
+\StringTok{                  }\KeywordTok{select}\NormalTok{ ( geo, code16, change, resolution ), }
+                \DataTypeTok{by =} \StringTok{'geo'}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{filter}\NormalTok{ ( change }\OperatorTok{!=}\StringTok{ "discontinued"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{mutate}\NormalTok{ ( }\DataTypeTok{problem_code =}\NormalTok{ geo ) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{mutate}\NormalTok{  ( }\DataTypeTok{geo =}\NormalTok{  code16)}
+  
+\NormalTok{  nuts1_missings <-}\StringTok{ }\NormalTok{missing_nuts1_}\DecValTok{2016}\NormalTok{  [ }\KeywordTok{which}\NormalTok{ ( missing_nuts1_}\DecValTok{2016} \OperatorTok{%in%}\StringTok{ }\NormalTok{incorrectly_labelled_nuts1_}\DecValTok{2013}\OperatorTok{$}\NormalTok{geo)] }
+
+  \CommentTok{## Probably you have recovered some NUTS1 regions.}
+\NormalTok{  found_nuts1 <-}\StringTok{ }\NormalTok{incorrectly_labelled_nuts1_}\DecValTok{2013} \OperatorTok{%>%}
+\StringTok{    }\KeywordTok{filter}\NormalTok{ (  geo }\OperatorTok{%in%}\StringTok{ }\NormalTok{missing_nuts1_}\DecValTok{2016}\NormalTok{  )}
+  \KeywordTok{message}\NormalTok{ ( }\StringTok{"Found "}\NormalTok{, }\KeywordTok{length}\NormalTok{(}\KeywordTok{unique}\NormalTok{(found_nuts1}\OperatorTok{$}\NormalTok{geo)), }\StringTok{" NUTS1 regions"}\NormalTok{)}
+  
+  \CommentTok{## Repeat to NUTS2 regions.}
+\NormalTok{  incorrectly_labelled_nuts2_}\DecValTok{2013}\NormalTok{ <-}\StringTok{ }\NormalTok{incorrectlly_labelled_nuts13 }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{filter}\NormalTok{ ( }\KeywordTok{nchar}\NormalTok{ (}\KeywordTok{as.character}\NormalTok{(geo)) }\OperatorTok{==}\StringTok{ }\DecValTok{4}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{select}\NormalTok{ ( }\OperatorTok{-}\NormalTok{change ) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{left_join}\NormalTok{ ( nuts2_correspondence }\OperatorTok{%>%}
+\StringTok{                  }\KeywordTok{rename}\NormalTok{ ( }\DataTypeTok{geo =}\NormalTok{ code13 ) }\OperatorTok{%>%}
+\StringTok{                  }\KeywordTok{filter}\NormalTok{ ( }\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(geo)) }\OperatorTok{%>%}
+\StringTok{                  }\KeywordTok{select}\NormalTok{ ( geo, code16, change, resolution ), }
+                \DataTypeTok{by =} \StringTok{'geo'}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{filter}\NormalTok{ ( change }\OperatorTok{!=}\StringTok{ "discontinued"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{mutate}\NormalTok{ ( }\DataTypeTok{problem_code =}\NormalTok{ geo ) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{mutate}\NormalTok{  ( }\DataTypeTok{geo =}\NormalTok{  code16)}
+  
+\NormalTok{  recoded_nuts2_}\DecValTok{2013}\NormalTok{ <-}\StringTok{ }\NormalTok{incorrectly_labelled_nuts2_}\DecValTok{2013} \OperatorTok{%>%}
+\StringTok{    }\KeywordTok{filter}\NormalTok{ ( change  }\OperatorTok{==}\StringTok{ "recoded"}\NormalTok{)}
+  
+\NormalTok{  found_nuts2 <-}\StringTok{ }\NormalTok{recoded_nuts2_}\DecValTok{2013} \OperatorTok{%>%}
+\StringTok{    }\KeywordTok{filter}\NormalTok{ (  geo }\OperatorTok{%in%}\StringTok{ }\NormalTok{missing_nuts2_}\DecValTok{2016}\NormalTok{  )}
+  
+  \KeywordTok{message}\NormalTok{ ( }\StringTok{"Found "}\NormalTok{, }\KeywordTok{length}\NormalTok{(}\KeywordTok{unique}\NormalTok{(found_nuts2}\OperatorTok{$}\NormalTok{geo)), }\StringTok{" NUTS2 regions"}\NormalTok{)}
+  
+  \CommentTok{## You can here pause for a minute.  In some cases, you may want to use }
+  \CommentTok{## your NUTS1 level data imputing the missing NUTS2 data. This is a}
+  \CommentTok{## good idea if you are not working with atomic count or financial }
+  \CommentTok{## information, but relational data like computers per capita.}
+  
+  
+  \CommentTok{## Now let us join the safe observations and see if we can do }
+  \CommentTok{## actual imputation. -------------------------------------------}
+  \ControlFlowTok{if}\NormalTok{ ( }\KeywordTok{length}\NormalTok{(}\KeywordTok{unique}\NormalTok{(found_nuts2}\OperatorTok{$}\NormalTok{geo)) }\OperatorTok{+}\StringTok{ }\KeywordTok{length}\NormalTok{(}\KeywordTok{unique}\NormalTok{(found_nuts1}\OperatorTok{$}\NormalTok{geo)) }\OperatorTok{==}\StringTok{ }\DecValTok{0}\NormalTok{) \{}
+    \KeywordTok{message}\NormalTok{ ( }\StringTok{"There is no data found that can be further arranged. Data is returned in its original format"}\NormalTok{)}
+    \KeywordTok{return}\NormalTok{ ( dat )}
+\NormalTok{  \}}
+  
+  
+  
+\NormalTok{  join_by <-}\StringTok{ }\KeywordTok{names}\NormalTok{ ( correctly_labelled_unchanged ) }
+\NormalTok{  join_by <-}\StringTok{ }\NormalTok{join_by [}\KeywordTok{which}\NormalTok{ ( join_by }\OperatorTok{%in%}\StringTok{ }\KeywordTok{names}\NormalTok{(correctly_labelled_changed) )]}
+  
+\NormalTok{  join_by2 <-}\StringTok{  }\KeywordTok{names}\NormalTok{ ( correctly_labelled_unchanged )}
+\NormalTok{  join_by2 <-}\StringTok{ }\NormalTok{join_by2 [}\KeywordTok{which}\NormalTok{ ( join_by2 }\OperatorTok{%in%}\StringTok{ }\KeywordTok{names}\NormalTok{(found_nuts1))]}
+
+\NormalTok{  so_far_joined <-}\StringTok{ }\KeywordTok{full_join}\NormalTok{ ( correctly_labelled_unchanged, }
+\NormalTok{                        correctly_labelled_changed, }
+                        \DataTypeTok{by =}\NormalTok{ join_by ) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{full_join}\NormalTok{ ( found_nuts1, }\DataTypeTok{by =}\NormalTok{ join_by2 ) }
+  
+  \CommentTok{##The number of columns will increase}
+\NormalTok{  join_by3 <-}\StringTok{  }\KeywordTok{names}\NormalTok{ ( so_far_joined )}
+\NormalTok{  join_by3 <-}\StringTok{ }\NormalTok{join_by3 [}\KeywordTok{which}\NormalTok{ ( join_by3 }\OperatorTok{%in%}\StringTok{ }\KeywordTok{names}\NormalTok{(found_nuts2))]}
+  
+\NormalTok{  so_far_joined <-}\StringTok{ }\NormalTok{so_far_joined  }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{full_join}\NormalTok{ ( found_nuts2, }\DataTypeTok{by =}\NormalTok{ join_by3 )}
+  
+
+  \CommentTok{## We have correspondence data only for (most of) the EU countries.}
+\NormalTok{  remaining_eu_data <-}\StringTok{ }\NormalTok{tmp }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{filter}\NormalTok{ ( }\OperatorTok{!}\StringTok{ }\NormalTok{geo }\OperatorTok{%in%}\StringTok{ }\NormalTok{so_far_joined}\OperatorTok{$}\NormalTok{geo) }
+  
+  \CommentTok{## These are the known entities that may be used in corrections.}
+  \CommentTok{## Make sure that you have at least an empty row for them.}
+  
+\NormalTok{  used_in_correction <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"FR24"}\NormalTok{,}
+                          \StringTok{"FR26"}\NormalTok{,}\StringTok{"FR43"}\NormalTok{,}
+                          \StringTok{"FR23"}\NormalTok{,}\StringTok{"FR25"}\NormalTok{,}
+                          \StringTok{"FR22"}\NormalTok{,}\StringTok{"FR30"}\NormalTok{,}
+                          \StringTok{"FR21"}\NormalTok{,}\StringTok{"FR41"}\NormalTok{,}\StringTok{"FR42"}\NormalTok{,}
+                          \StringTok{"FR51"}\NormalTok{,}
+                          \StringTok{"FR52"}\NormalTok{,}
+                          \StringTok{"FR53"}\NormalTok{, }\StringTok{"FR61"}\NormalTok{, }\StringTok{"FR63"}\NormalTok{,}
+                          \StringTok{"FR62"}\NormalTok{, }\StringTok{"FR81"}\NormalTok{,}
+                          \StringTok{"FR7"}\NormalTok{,}
+                          \StringTok{"FR82"}\NormalTok{,}
+                          \StringTok{"FR83"}\NormalTok{,}
+                          \StringTok{"FRA"}\NormalTok{, }
+                          \StringTok{"PL11"}\NormalTok{,}\StringTok{"PL33"}\NormalTok{,}
+                          \StringTok{"PL3"}\NormalTok{, }
+                          \StringTok{"PL12"}\NormalTok{, }
+                          \StringTok{"IE023"}\NormalTok{, }\StringTok{"IE024"}\NormalTok{, }\StringTok{"IE025"}\NormalTok{, }
+                          \StringTok{"LT00"}\NormalTok{, }\StringTok{"LT00A"}\NormalTok{, }
+                          \StringTok{"UKM2"}\NormalTok{,  }
+                          \StringTok{"UKM31"}\NormalTok{, }\StringTok{"UKM34"}\NormalTok{, }\StringTok{"UKM35"}\NormalTok{, }\StringTok{"UKM36"}\NormalTok{,}
+                          \StringTok{"UKM24"}\NormalTok{, }\StringTok{"UKM32"}\NormalTok{, }\StringTok{"UKM33"}\NormalTok{, }\StringTok{"UKM37"}\NormalTok{, }\StringTok{"UKM38"}\NormalTok{, }
+                          \StringTok{"HU102"}\NormalTok{, }\StringTok{"HU101"}
+\NormalTok{  )}
+  
+  \CommentTok{## This is the candidate subset for imputation----------------------}
+\NormalTok{  correct_with_correspondence <-}\StringTok{ }\NormalTok{remaining_eu_data }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{select}\NormalTok{ ( time, country_code, years, indicator, geo, values ) }
+  
+  \CommentTok{## The data has time and space dimension, so corrections have to be }
+  \CommentTok{## made for each year in the dataset, especially because usually }
+  \CommentTok{## the labelling is not consistent through the years.}
+  
+\NormalTok{  correspondence_by_year <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{ (df, this_time ) \{}
+\NormalTok{    df <-}\StringTok{ }\NormalTok{df }\OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{ ( time }\OperatorTok{==}\StringTok{ }\NormalTok{this_time )}
+    
+    \CommentTok{##To make joining possible, you must have at least empty rows}
+    \CommentTok{##for the changed regions.}
+    \CommentTok{##Do not forget that the Eurostat codes are not ISO-conform in}
+    \CommentTok{##the case of the United Kingdom and Greece. }
+    \CommentTok{##This applies to the regional codes, too. }
+\NormalTok{    complete_with_missing <-}\StringTok{ }\KeywordTok{tibble}\NormalTok{ (}
+      \DataTypeTok{geo  =}\NormalTok{ used_in_correction[}\KeywordTok{which}\NormalTok{ ( }\OperatorTok{!}\StringTok{ }\KeywordTok{unique}\NormalTok{(used_in_correction) }\OperatorTok{%in%}\StringTok{ }\NormalTok{df}\OperatorTok{$}\NormalTok{geo)], }
+      \DataTypeTok{country_code =} \KeywordTok{case_when}\NormalTok{ ( }
+        \KeywordTok{substr}\NormalTok{(geo,}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{) }\OperatorTok{==}\StringTok{ "UK"} \OperatorTok{~}\StringTok{ "GB"}\NormalTok{,}
+        \KeywordTok{substr}\NormalTok{(geo,}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{) }\OperatorTok{==}\StringTok{ "EL"} \OperatorTok{~}\StringTok{ "GR"}\NormalTok{,}
+        \OtherTok{TRUE} \OperatorTok{~}\StringTok{ }\KeywordTok{substr}\NormalTok{(geo,}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{)), }
+      \DataTypeTok{values =} \OtherTok{NA_real_}\NormalTok{, }
+      \DataTypeTok{indicator  =} \OtherTok{NA_character_}\NormalTok{, }
+      \DataTypeTok{time =}\NormalTok{ this_time, }
+      \DataTypeTok{years =} \KeywordTok{as.numeric}\NormalTok{(}\KeywordTok{substr}\NormalTok{(}\KeywordTok{as.character}\NormalTok{ (this_time),}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{))}
+\NormalTok{    )}
+    
+    \CommentTok{##Try all possible improvements, though most of this will be missing}
+    \CommentTok{##in most datasets. }
+\NormalTok{    correct_with_correspondence <-}\StringTok{ }\NormalTok{df }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{full_join}\NormalTok{ (., complete_with_missing, }
+                 \DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\StringTok{"indicator"}\NormalTok{, }\StringTok{"geo"}\NormalTok{, }\StringTok{"values"}\NormalTok{, }\StringTok{"years"}\NormalTok{,}
+                        \StringTok{"time"}\NormalTok{, }\StringTok{"country_code"}\NormalTok{) ) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{fill}\NormalTok{ ( indicator )  }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{spread}\NormalTok{ ( geo, values  ) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{mutate}\NormalTok{ ( }\DataTypeTok{FRB=}\NormalTok{FR24,}
+               \DataTypeTok{FRC=}\NormalTok{FR26}\OperatorTok{+}\NormalTok{FR43,}
+               \DataTypeTok{FRD=}\NormalTok{FR23}\OperatorTok{+}\NormalTok{FR25,}
+               \DataTypeTok{FRE=}\NormalTok{FR22}\OperatorTok{+}\NormalTok{FR30,}
+               \DataTypeTok{FRF=}\NormalTok{FR21}\OperatorTok{+}\NormalTok{FR41}\OperatorTok{+}\NormalTok{FR42,}
+               \DataTypeTok{FRG=}\NormalTok{FR51,}
+               \DataTypeTok{FRH=}\NormalTok{FR52,}
+               \DataTypeTok{FRI=}\NormalTok{FR53}\OperatorTok{+}\NormalTok{FR61}\OperatorTok{+}\NormalTok{FR63,}
+               \DataTypeTok{FRJ=}\NormalTok{FR62}\OperatorTok{+}\NormalTok{FR81,}
+               \DataTypeTok{FRK=}\NormalTok{FR7,}
+               \DataTypeTok{FRL=}\NormalTok{FR82,}
+               \DataTypeTok{FRM=}\NormalTok{FR83,}
+               \DataTypeTok{FRY=}\NormalTok{FRA, }
+               \DataTypeTok{LT02=}\NormalTok{LT00}\OperatorTok{-}\NormalTok{LT00A,}
+               \DataTypeTok{UKM7=}\NormalTok{UKM2}\OperatorTok{-}\NormalTok{UKM24,}
+               \DataTypeTok{UKM8=}\NormalTok{UKM31}\OperatorTok{+}\NormalTok{UKM34}\OperatorTok{+}\NormalTok{UKM35}\OperatorTok{+}\NormalTok{UKM36,}
+               \DataTypeTok{UKM9=}\NormalTok{UKM24}\OperatorTok{+}\NormalTok{UKM32}\OperatorTok{+}\NormalTok{UKM33}\OperatorTok{+}\NormalTok{UKM37}\OperatorTok{+}\NormalTok{UKM38, }
+               \DataTypeTok{PL7=}\NormalTok{PL11}\OperatorTok{+}\NormalTok{PL33,}
+               \DataTypeTok{PL8=}\NormalTok{PL3}\OperatorTok{-}\NormalTok{PL33,}
+               \DataTypeTok{PL9=}\NormalTok{PL12,}
+               \DataTypeTok{IE05=}\NormalTok{IE023}\OperatorTok{+}\NormalTok{IE024}\OperatorTok{+}\NormalTok{IE025,}
+               \DataTypeTok{HU11=}\NormalTok{HU101,}
+               \DataTypeTok{HU12=}\NormalTok{HU102) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{gather}\NormalTok{ ( geo, values, }\OperatorTok{-}\KeywordTok{one_of}\NormalTok{(}\StringTok{"indicator"}\NormalTok{, }\StringTok{"country_code"}\NormalTok{, }\StringTok{"time"}\NormalTok{, }\StringTok{"years"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{filter}\NormalTok{ ( }\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(values)) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{filter}\NormalTok{ ( geo }\OperatorTok{%in%}\StringTok{ }\KeywordTok{c}\NormalTok{(missing_nuts1_}\DecValTok{2016}\NormalTok{, missing_nuts2_}\DecValTok{2016}\NormalTok{ ))}
+    
+    \CommentTok{#Return the long form table for the given year.}
+\NormalTok{    correct_with_correspondence}
+\NormalTok{  \}}
+  
+  \ControlFlowTok{for}\NormalTok{ ( i }\ControlFlowTok{in} \KeywordTok{seq_along}\NormalTok{(}\KeywordTok{unique}\NormalTok{(correct_with_correspondence}\OperatorTok{$}\NormalTok{time))) \{}
+\NormalTok{    this_time <-}\StringTok{ }\KeywordTok{unique}\NormalTok{(correct_with_correspondence}\OperatorTok{$}\NormalTok{time)[i]}
+    \ControlFlowTok{if}\NormalTok{ ( i }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{ ) \{}
+\NormalTok{      corrected_with_correspondence <-}\StringTok{ }\KeywordTok{correspondence_by_year}\NormalTok{ (correct_with_correspondence, }
+                                                               \DataTypeTok{this_time =}\NormalTok{ this_time ) }
+\NormalTok{    \} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{      tmp <-}\StringTok{ }\KeywordTok{correspondence_by_year}\NormalTok{ (correct_with_correspondence, }
+                                     \DataTypeTok{this_time =}\NormalTok{ this_time ) }
+      \ControlFlowTok{if}\NormalTok{ ( }\KeywordTok{is.null}\NormalTok{(tmp)) }\ControlFlowTok{next} 
+      \ControlFlowTok{if}\NormalTok{ ( }\OperatorTok{!}\KeywordTok{nrow}\NormalTok{(tmp)}\OperatorTok{==}\DecValTok{0}\NormalTok{ ) \{}
+\NormalTok{        corrected_with_correspondence <-}\StringTok{ }\KeywordTok{full_join}\NormalTok{ (}
+\NormalTok{          corrected_with_correspondence ,tmp,}
+          \DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\StringTok{"time"}\NormalTok{, }\StringTok{"country_code"}\NormalTok{, }\StringTok{"years"}\NormalTok{, }\StringTok{"indicator"}\NormalTok{,}
+                 \StringTok{"geo"}\NormalTok{, }\StringTok{"values"}\NormalTok{)) }
+\NormalTok{      \} }
+      
+\NormalTok{    \} }\CommentTok{#end of else}
+\NormalTok{  \} }\CommentTok{#end of loop}
+  
+  \CommentTok{## There are cases where the correspondence table is silent, or}
+  \CommentTok{## I have not found a solution yet. }
+  \CommentTok{## Let us give a warning about them.}
+  
+\NormalTok{  incorrectly_labelled_unknown <-}\StringTok{ }\NormalTok{tmp3 }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{filter}\NormalTok{ ( }\OperatorTok{!}\StringTok{ }\NormalTok{geo }\OperatorTok{%in%}\StringTok{ }\KeywordTok{c}\NormalTok{(changed_regions}\OperatorTok{$}\NormalTok{code16, changed_regions}\OperatorTok{$}\NormalTok{code13))}
+  
+  \ControlFlowTok{if}\NormalTok{ ( }\KeywordTok{nrow}\NormalTok{(incorrectly_labelled_unknown ) }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{ ) \{}
+      \KeywordTok{message}\NormalTok{ ( }\StringTok{"The following labels do not conform the NUTS2016 definition: "}\NormalTok{, }\KeywordTok{paste}\NormalTok{(}
+      \KeywordTok{unique}\NormalTok{(incorrectly_labelled_unknown}\OperatorTok{$}\NormalTok{geo), }\DataTypeTok{collapse =} \StringTok{","}\NormalTok{ )}
+\NormalTok{    )}
+    \KeywordTok{warning}\NormalTok{ (}\StringTok{"Unknown labels found"}\NormalTok{)}
+\NormalTok{  \} }
+  
+  \CommentTok{##Now you may have identical data with NUTS2013 and NUTS2016 geocodes}
+  \CommentTok{##if the labels are the same.}
+\NormalTok{  corrected_dataset <-}\StringTok{ }\KeywordTok{full_join}\NormalTok{ ( }
+\NormalTok{    so_far_joined,  corrected_with_correspondence, }
+    \DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\StringTok{"geo"}\NormalTok{, }\StringTok{"values"}\NormalTok{, }\StringTok{"indicator"}\NormalTok{, }\StringTok{'years'}\NormalTok{, }
+           \StringTok{'time'}\NormalTok{, }\StringTok{'country_code'}\NormalTok{) ) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{fill}\NormalTok{ ( unit ) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{add_count}\NormalTok{ ( geo, time )}
+  
+  \ControlFlowTok{if}\NormalTok{ ( }\KeywordTok{any}\NormalTok{(corrected_dataset}\OperatorTok{$}\NormalTok{n}\OperatorTok{>}\DecValTok{1}\NormalTok{)) \{}
+    \KeywordTok{message}\NormalTok{(}\StringTok{"Duplications occured, probably because of the relabelling."}\NormalTok{)}
+\NormalTok{    \}}
+  
+  \CommentTok{## Hopefully that is the only reason of the duplication, which }
+  \CommentTok{## is the case if not only the time and geo variable but the }
+  \CommentTok{## actual value of the statistical indicator matches.}
+\NormalTok{  corrected_dataset <-}\StringTok{ }\NormalTok{corrected_dataset }\OperatorTok{%>%}\StringTok{ }\KeywordTok{select}\NormalTok{ (}\OperatorTok{-}\NormalTok{n) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{ungroup}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{distinct}\NormalTok{ ( geo, time, values, }\DataTypeTok{.keep_all =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{add_count}\NormalTok{ ( geo, time )}
+  
+  \ControlFlowTok{if}\NormalTok{ ( }\KeywordTok{any}\NormalTok{(corrected_dataset}\OperatorTok{$}\NormalTok{n}\OperatorTok{>}\DecValTok{1}\NormalTok{)) \{}
+    \CommentTok{# You can add here further exception handling code if you want.}
+    \KeywordTok{warning}\NormalTok{(}\StringTok{"The duplications could not be resolved fully, please review manually"}\NormalTok{)}
+\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
+   \KeywordTok{message}\NormalTok{ (}\StringTok{"The duplications were resolved successfully."}\NormalTok{)  }
+\NormalTok{  \}}
+  
+  \CommentTok{##To document your work, here is the log file for this regional}
+  \CommentTok{##statistical product.}
+  \KeywordTok{message}\NormalTok{ ( }\StringTok{"Corrections: "}\NormalTok{, }\KeywordTok{paste}\NormalTok{(}
+    \KeywordTok{c}\NormalTok{(missing_nuts1_}\DecValTok{2016}\NormalTok{, missing_nuts2_}\DecValTok{2016}\NormalTok{ ) [}\KeywordTok{c}\NormalTok{(missing_nuts1_}\DecValTok{2016}\NormalTok{, missing_nuts2_}\DecValTok{2016}\NormalTok{ ) }\OperatorTok{%in%}\StringTok{  }\NormalTok{corrected_dataset}\OperatorTok{$}\NormalTok{geo], }
+    \DataTypeTok{collapse =} \StringTok{", "}
+\NormalTok{  ))}
+  
+  \CommentTok{## And now return the results:}
+\NormalTok{  corrected_dataset}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{conclusions}{%
+\subsection{Conclusions}\label{conclusions}}
+
+While I did write a comprehensive code to these problems, it has so many
+excemptions that I do not suggest do include it in the \texttt{eurostat}
+package, because it would require a lot of work to test all possible
+errors and to maintain the quality of the code as further changes may
+come in the future.
+
+\hypertarget{simple-filtering-and-error-handling}{%
+\subsubsection{Simple filtering and error
+handling}\label{simple-filtering-and-error-handling}}
+
+I think that the simple cases can and should be encoded in the eurostat
+package. For example, a very simple function could create two additional
+columns from the \texttt{geo} variable, like I did, a \texttt{code13}
+and a \texttt{code16} one, which contains the correct code for
+\texttt{NUTS2013} for backward compatiblity with pre-exsiting maps and
+reseaerch, and the current \texttt{NUTS2016} definition. The
+\texttt{eurostat} package should also allow the use of \texttt{NUTS2013}
+and \texttt{NUTS2016} maps.
+
+I also believe that a very simple fix could be done to create, whenever
+they are missing, the obviously equivalent rows. For example, if there
+is a \texttt{LU} or \texttt{LU0} data present, it should be mutated into
+a \texttt{LU00} row, too. This is not prone to error, and allows the use
+of \texttt{NUTS0}, \texttt{NUTS1} and \texttt{NUTS2} maps joining
+datasets.
+
+\hypertarget{warnings}{%
+\subsubsection{Warnings}\label{warnings}}
+
+In the case of \texttt{discontinued} and \texttt{changed} \texttt{geo}
+definitions, I think that the \texttt{get\_eurostat} function should
+give a warning, someling like ``Beware, the downloaded data contain geo
+codes that follow the earlier national and regional coding nomenclature.
+Read our vignette.''
+
+\hypertarget{consultation-with-eurostat}{%
+\subsubsection{Consultation with
+Eurostat}\label{consultation-with-eurostat}}
+
+There is a statistical regulation on how the NUTS change have to be
+carried out in statistics, and I am sure that Eurostat more or less
+complies with them, but it does not mean that it complies with the best
+possible way. The current solution is extremely error-prone and it
+should be recommended to Eurostat to change it.
+
+\begin{itemize}
+\item
+  The inconsistent label levels and label codes make the joining of
+  different statistical tables almost impossible. Especially French,
+  German, British and Polish data, furthermore the small country data is
+  almost always lost in joining operations. It would be far better to
+  provide table with two coding columns, like the solution above with
+  \texttt{geo\_code13} and \texttt{geo\_code16}, or with the addition of
+  an explicit auxillary column saying that the actual row is defined as
+  \texttt{NUTS2013} or \texttt{NUTS2016}. This is not unambigous,
+  because in some cases the codes changed, and in other they did not. A
+  \texttt{PL2} code can be both \texttt{NUTS2013} or \texttt{NUTS2016}.
+\item
+  The mixed presence of \texttt{NUTS2013} and \texttt{NUTS2016} data
+  makes panel data arrangement next to impossible. These should be
+  separate statistical products with separate name and metadata
+  explanations.
+\item
+  Some products go back as far as the \texttt{NUTS2003} definitions, and
+  it should be clear, and if possible, consistent, how transition from
+  \texttt{NUTS2013} to \texttt{NUTS2006}, then to \texttt{NUTS2010},
+  then to \texttt{NUTS2013} and eventually \texttt{NUTS2016} happened.
+\item
+  The introduction of mixed level statistical products, like
+  \href{https://appsso.eurostat.ec.europa.eu/nui/show.do?dataset=isoc_r_iuse_i\&lang=en}{isoc\_r\_iuse\_i},
+  is welcome, because it allows users to follow the correspondence
+  tables, but it should be done with correct descriptions and in a
+  consistent way.
+\item
+  It is a bad practice that whenever NUTS or NACE or COFOG or other
+  statistical definitions change, Eurostat withdraws statistical
+  products. These products should be made available forever in an
+  archive section, with warnings that they are not subject to further
+  revisions and improvements, and they use out-of-date statistical
+  definitions. Such datasets may be used in many academic and
+  non-academic populations, which cannot be reviewed and fact checked if
+  the data disappears. With the increasing use of reproducible research
+  techniques in academia and among professional users, disappearing
+  datasets, or datasets that are not renamed but changed in essence
+  cause extraordinary amont of debugging work.
+\end{itemize}
+
+
+\end{document}
